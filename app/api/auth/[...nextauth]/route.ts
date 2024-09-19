@@ -1,9 +1,10 @@
 // app/api/auth/[...nextauth]/route.ts
+// app/api/auth/[...nextauth]/route.ts
 import NextAuth from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
-import bcrypt from 'bcrypt';
+import bcrypt from 'bcryptjs'; // Consider using bcryptjs
 
 const handler = NextAuth({
   adapter: PrismaAdapter(prisma),
@@ -22,10 +23,12 @@ const handler = NextAuth({
         });
 
         if (user && (await bcrypt.compare(credentials.password, user.password))) {
-          return { 
-            id: user.id.toString(), 
-            email: user.email 
-        };
+          console.log(user);
+            return {
+            id: user.id.toString(),
+            email: user.email,
+            name: user.companyName, // Include name if needed
+          };
         } else {
           return null;
         }
@@ -44,7 +47,7 @@ const handler = NextAuth({
     },
     async session({ session, token }) {
       if (token && session.user) {
-        session.user.id = token.id;
+        session.user.id = token.id as string;
       }
       return session;
     },
