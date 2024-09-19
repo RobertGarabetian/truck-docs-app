@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
         password: hashedPassword,
       },
     });
+    console.log(user)
 
     return NextResponse.json({ message: 'User created successfully' }, { status: 201 });
   } catch (error) {
