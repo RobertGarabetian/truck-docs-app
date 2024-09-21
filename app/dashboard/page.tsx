@@ -21,7 +21,7 @@ export default function DashboardPage() {
       fetchDocuments();
       fetchTags();
     }
-  }, [session, status]);
+  }, [session, status, router]);
 
   const fetchDocuments = async () => {
     const res = await fetch("/api/documents");

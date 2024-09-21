@@ -6,6 +6,7 @@ import prisma from '@/lib/prisma';
 export const runtime = 'nodejs';
 
 export const GET = async (req: NextRequest) => {
+  console.log(req)
   try {
     const tags = await prisma.tag.findMany({
       orderBy: { name: 'asc' },

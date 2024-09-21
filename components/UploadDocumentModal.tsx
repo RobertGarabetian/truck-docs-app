@@ -13,7 +13,7 @@ export default function UploadDocumentModal({
   const [tags, setTags] = useState<string[]>([]);
   const [file, setFile] = useState<File | null>(null);
   const [tagInput, setTagInput] = useState("");
-
+  console.log(setFile);
   const handleAddTag = () => {
     if (tagInput.trim() && !tags.includes(tagInput.trim())) {
       setTags([...tags, tagInput.trim()]);
