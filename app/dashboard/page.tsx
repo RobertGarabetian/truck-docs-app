@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import UploadDocumentModal from "@/components/UploadDocumentModal";
+import { Document, Tag } from "@prisma/client";
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -27,7 +28,14 @@ export default function DashboardPage() {
     const res = await fetch("/api/documents");
     if (res.ok) {
       const data = await res.json();
-      setDocuments(data);
+      setDocuments(
+        data.map(
+          (doc: Document & { tags: { id: number; name: string }[] }) => ({
+            ...doc,
+            tags: doc.tags.map((tag) => ({ name: tag.name })),
+          })
+        )
+      );
     } else {
     }
   };
@@ -102,7 +110,7 @@ export default function DashboardPage() {
             <tr key={doc.id} className="border-t">
               <td className="px-4 py-2">{doc.title}</td>
               <td className="px-4 py-2">
-                {doc.tags.map((tag: any) => (
+                {doc.tags.map((tag: { id: number; name: string }) => (
                   <span
                     key={tag.id}
                     className="inline-block bg-gray-200 text-gray-800 px-2 py-1 rounded mr-2 mb-1"
