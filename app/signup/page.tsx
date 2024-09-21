@@ -1,66 +1,81 @@
 // app/signup/page.tsx
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
+import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 
-const signUpSchema = z
+const signupSchema = z
   .object({
     companyName: z.string().min(1, "Company name is required"),
-    email: z
-      .string()
-      .email("Invalid email address")
-      .nonempty("Email is required"),
+    email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters"),
-    confirmPassword: z.string(),
+    confirmPassword: z.string().min(6, "Please confirm your password"),
   })
   .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords don't match",
+    message: "Passwords do not match",
     path: ["confirmPassword"],
   });
 
-type SignUpFormData = z.infer<typeof signUpSchema>;
+type SignupFormInputs = z.infer<typeof signupSchema>;
 
-export default function SignUpPage() {
+export default function SignupPage() {
+  const router = useRouter();
+  const [error, setError] = useState("");
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<SignUpFormData>({
-    resolver: zodResolver(signUpSchema),
+  } = useForm<SignupFormInputs>({
+    resolver: zodResolver(signupSchema),
   });
 
-  const onSubmit = async (data: SignUpFormData) => {
+  const onSubmit = async (data: SignupFormInputs) => {
     try {
-      const response = await fetch("/api/auth/register", {
+      const res = await fetch("/api/auth/register", {
         method: "POST",
+        body: JSON.stringify({
+          companyName: data.companyName,
+          email: data.email,
+          password: data.password,
+        }),
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        // Registration successful
-        // Redirect to dashboard or login page
+      if (res.ok) {
+        // Automatically sign in the user
+        const signInResult = await signIn("credentials", {
+          redirect: false,
+          email: data.email,
+          password: data.password,
+        });
+
+        if (signInResult?.error) {
+          setError("Error signing in after registration.");
+        } else {
+          // Redirect to dashboard
+          router.push("/dashboard");
+        }
       } else {
-        // Handle server errors
-        const errorData = await response.json();
-        console.error("Error:", errorData);
+        const errorData = await res.json();
+        setError(errorData.error || "Registration failed");
       }
-    } catch (error) {
-      console.error("Error:", error);
+    } catch (err) {
+      console.error("Registration Error:", err);
+      setError("An unexpected error occurred");
     }
   };
 
   return (
     <main className="flex items-center justify-center min-h-screen bg-gray-100">
       <div className="w-full max-w-md p-8 bg-white rounded shadow">
-        <h1 className="text-2xl font-bold text-center mb-6">
-          Create an Account
-        </h1>
+        <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           {/* Company Name */}
           <div className="mb-4">
@@ -152,6 +167,11 @@ export default function SignUpPage() {
               </p>
             )}
           </div>
+
+          {/* Error Message */}
+          {error && (
+            <p className="text-red-500 text-sm mb-4 text-center">{error}</p>
+          )}
 
           {/* Submit Button */}
           <button

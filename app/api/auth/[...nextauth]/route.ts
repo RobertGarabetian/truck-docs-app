@@ -1,12 +1,13 @@
 // app/api/auth/[...nextauth]/route.ts
-// app/api/auth/[...nextauth]/route.ts
-import NextAuth from 'next-auth';
+
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
 import { PrismaAdapter } from '@next-auth/prisma-adapter';
 import prisma from '@/lib/prisma';
-import bcrypt from 'bcryptjs'; // Consider using bcryptjs
+import bcrypt from 'bcryptjs';
 
-const handler = NextAuth({
+// Define authOptions
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     CredentialsProvider({
@@ -23,11 +24,10 @@ const handler = NextAuth({
         });
 
         if (user && (await bcrypt.compare(credentials.password, user.password))) {
-          console.log(user);
-            return {
+          return {
             id: user.id.toString(),
             email: user.email,
-            name: user.companyName, // Include name if needed
+            name: user.companyName,
           };
         } else {
           return null;
@@ -55,6 +55,10 @@ const handler = NextAuth({
   pages: {
     signIn: '/login',
   },
-});
+  secret: process.env.NEXTAUTH_SECRET,
+};
+
+// Use authOptions in NextAuth
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };
