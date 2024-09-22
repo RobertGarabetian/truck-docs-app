@@ -15,12 +15,13 @@ export const GET = async (req: NextRequest) => {
   }
 
   const userId = parseInt(session.user.id, 10);
+  console.log(userId);
 
   try {
     const documents = await prisma.document.findMany({
       // where: { userId },
       include: { tags: true },
-      // orderBy: { createdAt: 'desc' },
+      orderBy: { createdAt: 'desc' },
     });
 
     return NextResponse.json(documents, { status: 200 });

@@ -38,7 +38,7 @@ export default function UploadDocumentModal({
     formData.append("file", file);
     tags.forEach((tag) => formData.append("tags", tag));
 
-    const res = await fetch("/api/documents/upload", {
+    const res = await fetch("/api/documents", {
       method: "POST",
       body: formData,
     });
