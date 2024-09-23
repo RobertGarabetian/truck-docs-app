@@ -116,7 +116,7 @@ const ContactPage: React.FC = () => {
           <div className="text-center">
             <h2 className="text-3xl font-bold mb-4">Thank You!</h2>
             <p className="text-lg">
-              Your message has been sent. We'll get back to you soon.
+              Your message has been sent. We&apos;ll get back to you soon.
             </p>
           </div>
         )}
