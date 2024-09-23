@@ -65,9 +65,9 @@ export default function DashboardPage() {
   );
 
   return (
-    <main className="p-8">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">
+    <main className="p-8 bg-slate-200 h-screen w-full py-40">
+      <div className="flex justify-between items-center mb-6 ">
+        <h1 className="text-2xl font-bold text-blue-600">
           Welcome to your Dashboard,{" "}
           {session?.user?.name || session?.user?.email}!
         </h1>
@@ -80,7 +80,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Tag Filters */}
-      <div className="mb-4">
+      {/* <div className="mb-4">
         <h2 className="text-lg font-semibold mb-2">Filter by Tags:</h2>
         <div className="flex flex-wrap">
           {availableTags.map((tag) => (
@@ -97,12 +97,12 @@ export default function DashboardPage() {
             </button>
           ))}
         </div>
-      </div>
+      </div> */}
 
       {/* Documents Table */}
-      <table className="w-full table-auto">
+      <table className="table table-zebra border-2  border-opacity-40 rounded-lg">
         <thead>
-          <tr className="bg-gray-100">
+          <tr className="text-gray-700 text-2xl">
             <th className="px-4 py-2">Title</th>
             <th className="px-4 py-2">Tags</th>
             <th className="px-4 py-2">Uploaded At</th>
@@ -111,8 +111,8 @@ export default function DashboardPage() {
         </thead>
         <tbody>
           {filteredDocuments.map((doc) => (
-            <tr key={doc.id} className="border-t">
-              <td className="px-4 py-2">{doc.title}</td>
+            <tr key={doc.id} className="border-t text-xl">
+              <td className="px-4 py-2 ">{doc.title}</td>
               <td className="px-4 py-2">
                 {doc.tags.map((tag) => (
                   <span

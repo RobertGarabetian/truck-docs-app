@@ -53,8 +53,10 @@ export default function RootLayout({
           routerConfig={extractRouterConfig(ourFileRouter)}
         />
         <Providers>
-          <Navbar />
-          {children}
+          <div className="flex flex-col items-center w-screen">
+            <Navbar />
+            {children}
+          </div>
         </Providers>
       </body>
     </html>

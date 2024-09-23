@@ -3,7 +3,8 @@ import Image from "next/image";
 
 export default function Home() {
   return (
-    <main className="bg-gray-100">
+    <main className="bg-gray-100 w-full">
+      <div className="h-[60px] w-full bg-blue-600" />
       {/* Hero Section */}
       <section className="bg-blue-600 text-white py-20">
         <div className="container mx-auto px-6 text-center">
@@ -80,6 +81,63 @@ export default function Home() {
                 </h3>
                 <p className="text-gray-600 text-center">
                   Receive SMS reminders for important filing deadlines.
+                </p>
+              </div>
+            </div>
+            {/* Feature 4 */}
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <Image
+                  src="/icons/reminder.svg"
+                  alt="Reminders"
+                  width={48}
+                  height={48}
+                  className="h-12 mb-4 mx-auto"
+                />
+                <h3 className="text-xl font-semibold mb-2 text-center">
+                  Document Sharing
+                </h3>
+                <p className="text-gray-600 text-center">
+                  Seamlessly share specific documents via a secure link with
+                  employers, inspectors, insurance agents, 3rd parties etc..
+                </p>
+              </div>
+            </div>
+            {/* Feature 5 */}
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <Image
+                  src="/icons/reminder.svg"
+                  alt="Reminders"
+                  width={48}
+                  height={48}
+                  className="h-12 mb-4 mx-auto"
+                />
+                <h3 className="text-xl font-semibold mb-2 text-center">
+                  Customizable Folders
+                </h3>
+                <p className="text-gray-600 text-center">
+                  Users can organize documents by categories like "Insurance,"
+                  "Permits," "Vehicle Registration," and more.
+                </p>
+              </div>
+            </div>
+            {/* Feature 6 */}
+            <div className="w-full md:w-1/3 px-4 mb-8">
+              <div className="bg-white p-6 rounded-lg shadow-lg">
+                <Image
+                  src="/icons/organize.svg"
+                  alt="Organize"
+                  width={48}
+                  height={48}
+                  className="h-12 mb-4 mx-auto"
+                />
+                <h3 className="text-xl font-semibold mb-2 text-center">
+                  Compliance Tracking
+                </h3>
+                <p className="text-gray-600 text-center">
+                  Track important FMCSA and DOT regulations and deadlines to
+                  keep compliant{" "}
                 </p>
               </div>
             </div>

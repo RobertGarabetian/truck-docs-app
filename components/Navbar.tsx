@@ -3,12 +3,34 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { data: session } = useSession();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <nav className="bg-white shadow">
+    <nav
+      className={`bg-white shadow fixed ${
+        scrolled ? "animate-on-scroll active" : "animate-on-scroll"
+      }`}
+    >
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           href={session ? "/dashboard" : "/"}
@@ -46,7 +68,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/signup"
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition-colors"
+                className="bg-blue-600 text-white px-4 py-2 rounded-2xl hover:bg-blue-500 transition-colors"
               >
                 Sign Up
               </Link>

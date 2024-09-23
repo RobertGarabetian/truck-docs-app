@@ -15,6 +15,7 @@ const config: Config = withUt({
       },
     },
   },
-  plugins: [],
+  plugins: [    require('daisyui'),
+],
 });
 export default config;
