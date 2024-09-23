@@ -32,7 +32,7 @@ export default function LoginPage() {
         <h1 className="text-2xl font-bold text-center mb-6">Sign In</h1>
         <form onSubmit={handleSubmit} noValidate>
           {/* Email */}
-          <div className="mb-4">
+          <div className="mb-4 text-slate-700">
             <label htmlFor="email" className="block text-gray-700 mb-2">
               Email Address
             </label>
@@ -42,7 +42,7 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)} // Using setEmail
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-3 py-2 border rounded bg-white focus:outline-none focus:ring focus:border-blue-300"
             />
           </div>
 
@@ -57,7 +57,7 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)} // Using setPassword
               required
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
+              className="w-full px-3 py-2 border bg-white rounded focus:outline-none focus:ring focus:border-blue-300"
             />
           </div>
 

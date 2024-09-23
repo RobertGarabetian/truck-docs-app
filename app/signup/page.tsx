@@ -78,15 +78,15 @@ export default function SignupPage() {
         <h1 className="text-2xl font-bold text-center mb-6">Sign Up</h1>
         <form onSubmit={handleSubmit(onSubmit)} noValidate>
           {/* Company Name */}
-          <div className="mb-4">
-            <label htmlFor="companyName" className="block text-gray-700 mb-2">
+          <div className="mb-4 text-slate-700">
+            <label htmlFor="companyName" className="block text-gray-700 mb-2 ">
               Company Name
             </label>
             <input
               type="text"
               id="companyName"
               {...register("companyName")}
-              className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring ${
+              className={`w-full px-3 py-2 border bg-white rounded focus:outline-none focus:ring ${
                 errors.companyName
                   ? "border-red-500"
                   : "border-gray-300 focus:border-blue-300"
@@ -108,7 +108,7 @@ export default function SignupPage() {
               type="email"
               id="email"
               {...register("email")}
-              className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring ${
+              className={`w-full px-3 py-2 border rounded bg-white focus:outline-none focus:ring ${
                 errors.email
                   ? "border-red-500"
                   : "border-gray-300 focus:border-blue-300"
@@ -130,7 +130,7 @@ export default function SignupPage() {
               type="password"
               id="password"
               {...register("password")}
-              className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring ${
+              className={`w-full px-3 py-2 border rounded bg-white focus:outline-none focus:ring ${
                 errors.password
                   ? "border-red-500"
                   : "border-gray-300 focus:border-blue-300"
@@ -155,7 +155,7 @@ export default function SignupPage() {
               type="password"
               id="confirmPassword"
               {...register("confirmPassword")}
-              className={`w-full px-3 py-2 border rounded focus:outline-none focus:ring ${
+              className={`w-full px-3 py-2 border rounded bg-white focus:outline-none focus:ring ${
                 errors.confirmPassword
                   ? "border-red-500"
                   : "border-gray-300 focus:border-blue-300"
