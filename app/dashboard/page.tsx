@@ -18,7 +18,7 @@ export default function DashboardPage() {
   const [availableTags, setAvailableTags] = useState<
     { id: number; name: string }[]
   >([]);
-
+  console.log(availableTags);
   useEffect(() => {
     if (!session && status !== "loading") {
       router.push("/login");
@@ -56,6 +56,7 @@ export default function DashboardPage() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
+  console.log(handleFilterChange);
 
   const filteredDocuments = documents.filter(
     (doc: Document & { tags: { id: number; name: string }[] }) =>

@@ -117,8 +117,9 @@ export default function Home() {
                   Customizable Folders
                 </h3>
                 <p className="text-gray-600 text-center">
-                  Users can organize documents by categories like "Insurance,"
-                  "Permits," "Vehicle Registration," and more.
+                  Users can organize documents by categories like
+                  &quot;Insurance,&quot; &quot;Permits,&quot; &quot;Vehicle
+                  Registration,&quot; and more.
                 </p>
               </div>
             </div>
