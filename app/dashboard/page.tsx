@@ -66,7 +66,7 @@ export default function DashboardPage() {
   );
 
   return (
-    <main className="p-8 bg-slate-200 h-screen w-full py-40">
+    <main className="p-8 bg-slate-200 h-screen w-full ">
       <div className="flex justify-between items-center mb-6 ">
         <h1 className="text-2xl font-bold text-blue-600">
           Welcome to your Dashboard,{" "}

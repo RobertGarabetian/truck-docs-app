@@ -6,6 +6,7 @@ import Providers from "./Providers";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
+import NavbarWrapper from "@/components/NavbarWrapper";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -38,6 +39,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // List of paths where navbar should not appear
+
   return (
     <html lang="en">
       <body
@@ -54,7 +57,7 @@ export default function RootLayout({
         />
         <Providers>
           <div className="flex flex-col items-center w-screen">
-            <Navbar />
+            <NavbarWrapper />
             {children}
           </div>
         </Providers>
