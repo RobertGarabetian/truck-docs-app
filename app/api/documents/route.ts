@@ -20,7 +20,7 @@ export const GET = async (req: NextRequest) => {
   try {
     const documents = await prisma.document.findMany({
       // where: { userId },
-      include: { tags: true },
+      include: { tag: true },
       orderBy: { createdAt: 'desc' },
     });
 
@@ -30,3 +30,29 @@ export const GET = async (req: NextRequest) => {
     return NextResponse.json({ error: 'Failed to fetch documents' }, { status: 500 });
   }
 };
+export async function POST(req: Request) {
+  const { title, fileUrl, tagId } = await req.json();
+const session = await getServerSession({ req, ...authOptions });
+
+  if (!session || !session.user || !session.user.id) {
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  const userId = parseInt(session.user.id, 10);
+  console.log(userId);
+  try {
+    const document = await prisma.document.create({
+      data: {
+        title,
+        fileUrl,
+        tag: { connect: { id: tagId } },
+        user: { connect: { id: userId } }, // Ensure you have the correct user ID
+      },
+    });
+
+    return new Response(JSON.stringify(document), { status: 201 });
+  } catch (error) {
+    console.error("Error saving document:", error);
+    return new Response(JSON.stringify({ error: "Failed to save document" }), { status: 500 });
+  }
+}

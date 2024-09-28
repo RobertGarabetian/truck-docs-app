@@ -1,8 +1,13 @@
 // components/UploadDocumentModal.tsx
 "use client";
 
-import { UploadButton } from "./SourceButtons";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { UploadButton, UploadDropzone } from "./SourceButtons";
+
+interface Tag {
+  id: number;
+  name: string;
+}
 
 export default function UploadDocumentModal({
   onClose,
@@ -10,114 +15,85 @@ export default function UploadDocumentModal({
   onClose: () => void;
 }) {
   const [title, setTitle] = useState("");
-  const [tags, setTags] = useState<string[]>([]);
+  const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
+  const [availableTags, setAvailableTags] = useState<Tag[]>([]);
   const [file, setFile] = useState<File | null>(null);
-  const [tagInput, setTagInput] = useState("");
-  console.log(setFile);
-  const handleAddTag = () => {
-    if (tagInput.trim() && !tags.includes(tagInput.trim())) {
-      setTags([...tags, tagInput.trim()]);
-      setTagInput("");
-    }
-  };
+  const [fileUrl, setFileUrl] = useState<string | null>(null);
 
-  const handleRemoveTag = (tagToRemove: string) => {
-    setTags(tags.filter((tag) => tag !== tagToRemove));
+  // Fetch available tags when the component mounts
+  useEffect(() => {
+    const fetchTags = async () => {
+      try {
+        const res = await fetch("/api/tags");
+        if (res.ok) {
+          const data: Tag[] = await res.json();
+          setAvailableTags(data);
+        } else {
+          console.error("Failed to fetch tags");
+          alert("Failed to load tags. Please try again later.");
+        }
+      } catch (error) {
+        console.error("Error fetching tags:", error);
+        alert("An error occurred while loading tags.");
+      }
+    };
+
+    fetchTags();
+  }, []);
+
+  // Handle file selection
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!file) {
-      alert("Please select a file.");
+    if (!fileUrl || !selectedTagId) {
+      alert("Please select a tag and upload a file.");
       return;
     }
 
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("file", file);
-    tags.forEach((tag) => formData.append("tags", tag));
+    const documentData = {
+      title: title,
+      fileUrl: fileUrl, // The file URL after the upload is complete
+      tagId: selectedTagId, // The selected tag ID
+    };
 
-    const res = await fetch("/api/documents", {
-      method: "POST",
-      body: formData,
-    });
+    try {
+      const res = await fetch("/api/documents", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(documentData),
+      });
 
-    if (res.ok) {
-      alert("Document uploaded successfully!");
-      onClose();
-      // Optionally, refresh the documents list
-    } else {
-      const errorData = await res.json();
-      alert(errorData.error || "Upload failed.");
+      if (res.ok) {
+        alert("Document uploaded successfully!");
+        onClose();
+      } else {
+        const errorData = await res.json();
+        alert(errorData.error || "Upload failed.");
+      }
+    } catch (error) {
+      console.error("Error submitting document:", error);
+      alert("An error occurred during the upload.");
     }
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white p-6 rounded shadow w-full max-w-md">
-        <h2 className="text-xl font-bold mb-4">Upload Document</h2>
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+      <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-4">Upload Document</h2>
         <form onSubmit={handleSubmit}>
-          {/* Title */}
-          <div className="mb-4">
-            <label htmlFor="title" className="block text-gray-700 mb-2">
-              Title
-            </label>
-            <input
-              type="text"
-              id="title"
-              required
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-            />
-          </div>
-
-          {/* Tags */}
-          <div className="mb-4">
-            <label htmlFor="tags" className="block text-gray-700 mb-2">
-              Tags
-            </label>
-            <div className="flex items-center">
-              <input
-                type="text"
-                id="tags"
-                value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
-                className="flex-grow px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300"
-              />
-              <button
-                type="button"
-                onClick={handleAddTag}
-                className="ml-2 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-              >
-                Add
-              </button>
-            </div>
-            <div className="mt-2">
-              {tags.map((tag) => (
-                <span
-                  key={tag}
-                  className="inline-flex items-center bg-gray-200 text-gray-800 px-2 py-1 rounded mr-2 mt-2"
-                >
-                  {tag}
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveTag(tag)}
-                    className="ml-1 text-red-500 hover:text-red-700"
-                  >
-                    x
-                  </button>
-                </span>
-              ))}
-            </div>
-          </div>
-
-          {/* File */}
           <UploadButton
             endpoint="uploader"
             onClientUploadComplete={(res) => {
-              // Do something with the response
+              setFileUrl(res[0].url);
+              setTitle(res[0].name);
               console.log("Files: ", res);
               alert("Upload Completed");
             }}
@@ -125,7 +101,24 @@ export default function UploadDocumentModal({
               // Do something with the error.
               alert(`ERROR! ${error.message}`);
             }}
+            config={{ appendOnPaste: true, mode: "manual" }}
           />
+
+          {/* Tag Selection */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2 text-xl">Tag</label>
+            <select
+              value={selectedTagId ?? ""}
+              onChange={(e) => setSelectedTagId(parseInt(e.target.value))}
+              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-white"
+            >
+              {availableTags.map((tag) => (
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {/* Buttons */}
           <div className="flex justify-end space-x-2">

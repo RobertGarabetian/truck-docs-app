@@ -1,3 +1,4 @@
+//app/api/uploadthing
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
 import { getServerSession } from "next-auth";
@@ -5,7 +6,7 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import prisma from "@/lib/prisma";
 
 const f = createUploadthing();
-export const runtime = 'nodejs';
+export const runtime = "nodejs";
 
 const auth = async (req: Request) => {
   const session = await getServerSession({ req, ...authOptions });
@@ -22,37 +23,24 @@ const auth = async (req: Request) => {
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-  uploader: f({ pdf: { maxFileSize: "4MB" } })
-    .middleware(async ({ req }) => {
-      try {
-        const user = await auth(req);
-        
-        if (!user) throw new UploadThingError("Unauthorized");
-
-        return { userId: user.id };
-      } catch (error) {
-        console.error("Error in middleware:", error);
-        throw error;
-      }
-    })
-    .onUploadComplete(async ({ metadata, file }) => {
-      try {
-        console.log("Upload complete for userId:", metadata.userId);
-        console.log("File URL:", file.url);
-
-        // Save file info to your database
-        await prisma.document.create({
-          data: {
-            title: file.name,
-            fileUrl: file.url,
-            user: { connect: { id: metadata.userId } },
-          },
-        });
-      } catch (error) {
-        console.error("Error in onUploadComplete:", error);
-        throw error;
-      }
-    }),
+  uploader: f(["pdf"])
+  .middleware(async ({ req }) => {
+    // This code runs on your server before upload
+    const user = await auth(req);
+    // If you throw, the user will not be able to upload
+    if (!user) throw new UploadThingError("Unauthorized");
+    // Whatever is returned here is accessible in onUploadComplete as `metadata`
+    return { userId: user.id };
+  })
+  
+  
+  .onUploadComplete(async ({ metadata, file }) => {
+    // This code RUNS ON YOUR SERVER after upload
+    console.log("Upload complete for userId:", metadata.userId);
+    console.log("file url", file.url);
+    // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
+    return { uploadedBy: metadata.userId };
+  }),
 } satisfies FileRouter;
-export type OurFileRouter = typeof ourFileRouter;
 
+export type OurFileRouter = typeof ourFileRouter;
