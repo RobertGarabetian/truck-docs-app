@@ -9,50 +9,27 @@ generator client {
 }
 
 model User {
-  id         Int        @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   companyName String
-  email      String     @unique
-  password   String
-  documents  Document[] // Relation to Document model
+  email       String     @unique
+  password    String
+  documents   Document[] // Relation to Document model
 }
 
 model Document {
-  id        Int        @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   title     String
   fileUrl   String
-  tags      DocumentTag[]
-  user      User       @relation(fields: [userId], references: [id])
+  tag       Tag      @relation(fields: [tagId], references: [id])
+  tagId     Int
+  user      User     @relation(fields: [userId], references: [id])
   userId    Int
-  createdAt DateTime   @default(now())
-  updatedAt DateTime   @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
-
 
 model Tag {
-  id        Int          @id @default(autoincrement())
-  name      String       @unique
-  documents DocumentTag[]
+  id        Int        @id @default(autoincrement())
+  name      String     @unique
+  documents Document[] // Relation to Document model
 }
-
-model DocumentTag {
-  document   Document @relation(fields: [documentId], references: [id])
-  documentId Int
-  tag        Tag      @relation(fields: [tagId], references: [id])
-  tagId      Int
-
-  @@id([documentId, tagId])
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-

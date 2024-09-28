@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import UploadDocumentModal from "@/components/UploadDocumentModal";
-import { Document } from "@prisma/client"; // Removed Tag
+import { Document, Tag } from "@prisma/client"; // Removed Tag
 
 export default function DashboardPage() {
   const { data: session, status } = useSession();
@@ -18,7 +18,6 @@ export default function DashboardPage() {
   const [availableTags, setAvailableTags] = useState<
     { id: number; name: string }[]
   >([]);
-  console.log(availableTags);
   useEffect(() => {
     if (!session && status !== "loading") {
       router.push("/login");
@@ -50,13 +49,11 @@ export default function DashboardPage() {
       setAvailableTags(data);
     }
   };
-
   const handleFilterChange = (tag: string) => {
     setFilterTags((prev) =>
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
-  console.log(handleFilterChange);
 
   const filteredDocuments = documents.filter(
     (doc: Document & { tags: { id: number; name: string }[] }) =>
@@ -79,68 +76,50 @@ export default function DashboardPage() {
           Upload Document
         </button>
       </div>
-
-      {/* Tag Filters */}
-      {/* <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Filter by Tags:</h2>
-        <div className="flex flex-wrap">
-          {availableTags.map((tag) => (
-            <button
-              key={tag.id}
-              onClick={() => handleFilterChange(tag.name)}
-              className={`mr-2 mb-2 px-3 py-1 rounded ${
-                filterTags.includes(tag.name)
-                  ? "bg-blue-600 text-white"
-                  : "bg-gray-200 text-gray-800"
-              }`}
+      <div role="tablist" className="tabs tabs-lifted">
+        {availableTags.map((tag: any, index: number) => (
+          <React.Fragment key={tag.id}>
+            <input
+              type="radio"
+              name="my_tabs_2"
+              role="tab"
+              className="tab "
+              aria-label={tag.name}
+              defaultChecked={index === 0}
+            />
+            <div
+              role="tabpanel"
+              className="tab-content bg-transparent border-base-300 rounded-box p-6"
             >
-              {tag.name}
-            </button>
-          ))}
-        </div>
-      </div> */}
+              <table className="table   border-opacity-40 rounded-lg">
+                <tbody>
+                  {filteredDocuments.map((doc: Document) => (
+                    <tr key={doc.id} className="border-t text-xl">
+                      <td className="px-4 py-2 ">{doc.title}</td>
+
+                      <td className="px-4 py-2">
+                        {new Date(doc.createdAt).toLocaleString()}
+                      </td>
+                      <td className="px-4 py-2">
+                        <a
+                          href={doc.fileUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-blue-600 hover:underline"
+                        >
+                          View
+                        </a>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
 
       {/* Documents Table */}
-      <table className="table table-zebra border-2  border-opacity-40 rounded-lg">
-        <thead>
-          <tr className="text-gray-700 text-2xl">
-            <th className="px-4 py-2">Title</th>
-            <th className="px-4 py-2">Tags</th>
-            <th className="px-4 py-2">Uploaded At</th>
-            <th className="px-4 py-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredDocuments.map((doc) => (
-            <tr key={doc.id} className="border-t text-xl">
-              <td className="px-4 py-2 ">{doc.title}</td>
-              <td className="px-4 py-2">
-                {doc.tags.map((tag) => (
-                  <span
-                    key={tag.id}
-                    className="inline-block bg-gray-200 text-gray-800 px-2 py-1 rounded mr-2 mb-1"
-                  >
-                    {tag.name}
-                  </span>
-                ))}
-              </td>
-              <td className="px-4 py-2">
-                {new Date(doc.createdAt).toLocaleString()}
-              </td>
-              <td className="px-4 py-2">
-                <a
-                  href={doc.fileUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 hover:underline"
-                >
-                  View
-                </a>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
 
       {showUploadModal && (
         <UploadDocumentModal
