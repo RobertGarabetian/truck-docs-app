@@ -7,30 +7,8 @@ import { useEffect, useState } from "react";
 
 export default function Navbar() {
   const { data: session } = useSession();
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
-  }, []);
 
   return (
-    // <nav
-    //   className={`bg-white z-50 shadow fixed ${
-    //     scrolled ? "animate-on-scroll active" : "animate-on-scroll"
-    //   }`}
-    // >
     <nav
       className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-full`}
     >

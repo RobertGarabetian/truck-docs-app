@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UploadButton, UploadDropzone } from "./SourceButtons";
+import { UploadDropzone } from "./SourceButtons";
 
 interface Tag {
   id: number;
@@ -17,7 +17,6 @@ export default function UploadDocumentModal({
   const [title, setTitle] = useState("");
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
-  const [file, setFile] = useState<File | null>(null);
   const [fileUrl, setFileUrl] = useState<string | null>(null);
 
   // Fetch available tags when the component mounts
@@ -45,14 +44,7 @@ export default function UploadDocumentModal({
     fetchTags();
   }, []);
 
-  // Handle file selection
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files.length > 0) {
-      setFile(e.target.files[0]);
-    }
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async () => {
     if (!fileUrl) {
       alert("Please select file");
       return;

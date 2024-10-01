@@ -11,7 +11,6 @@ export default function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const pathname = usePathname();
   const { data: session } = useSession();
 
   return (

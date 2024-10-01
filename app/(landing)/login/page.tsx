@@ -1,7 +1,7 @@
 // app/login/page.tsx
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 import { signIn } from "next-auth/react";
 import { motion } from "framer-motion";
 import { Mail, Lock } from "lucide-react";
