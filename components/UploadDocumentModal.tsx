@@ -28,6 +28,10 @@ export default function UploadDocumentModal({
         if (res.ok) {
           const data: Tag[] = await res.json();
           setAvailableTags(data);
+
+          if (data.length > 0) {
+            setSelectedTagId(data[0].id);
+          }
         } else {
           console.error("Failed to fetch tags");
           alert("Failed to load tags. Please try again later.");
@@ -49,10 +53,8 @@ export default function UploadDocumentModal({
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!fileUrl || !selectedTagId) {
-      alert("Please select a tag and upload a file.");
+    if (!fileUrl) {
+      alert("Please select file");
       return;
     }
 
@@ -89,7 +91,7 @@ export default function UploadDocumentModal({
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Upload Document</h2>
         <form onSubmit={handleSubmit}>
-          <UploadButton
+          <UploadDropzone
             endpoint="uploader"
             onClientUploadComplete={(res) => {
               setFileUrl(res[0].url);

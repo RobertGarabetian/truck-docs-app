@@ -26,20 +26,23 @@ export default function Navbar() {
   }, []);
 
   return (
+    // <nav
+    //   className={`bg-white z-50 shadow fixed ${
+    //     scrolled ? "animate-on-scroll active" : "animate-on-scroll"
+    //   }`}
+    // >
     <nav
-      className={`bg-white shadow fixed ${
-        scrolled ? "animate-on-scroll active" : "animate-on-scroll"
-      }`}
+      className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-full`}
     >
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           href={session ? "/dashboard" : "/"}
-          className=" text-xl font-bold text-blue-600"
+          className=" text-2xl font-bold text-white"
         >
           TruckDocs
         </Link>
 
-        <div className="space-x-4">
+        <div className="space-x-4 text-white">
           <Link href="/features" className="hover:underline">
             Features
           </Link>

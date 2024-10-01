@@ -23,7 +23,12 @@ const auth = async (req: Request) => {
 
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
-  uploader: f(["pdf"])
+  uploader: f({
+    pdf: { 
+      maxFileSize: "4MB", 
+      maxFileCount: 5 
+    },
+  })
   .middleware(async ({ req }) => {
     // This code runs on your server before upload
     const user = await auth(req);
