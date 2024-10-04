@@ -9,7 +9,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-full`}
+      className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-screen`}
     >
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link

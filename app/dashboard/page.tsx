@@ -1,259 +1,309 @@
-// // app/dashboard/page.tsx
-// "use client";
-
-// import { useSession } from "next-auth/react";
-// import { useRouter } from "next/navigation";
-// import React, { useState, useEffect } from "react";
-// import UploadDocumentModal from "@/components/UploadDocumentModal";
-// import { Document, Tag } from "@prisma/client"; // Removed Tag
-
-// export default function DashboardPage() {
-//   const { data: session, status } = useSession();
-//   const router = useRouter();
-//   const [documents, setDocuments] = useState<Document[]>([]);
-//   const [showUploadModal, setShowUploadModal] = useState(false);
-//   const [filterTags, setFilterTags] = useState<string[]>([]);
-//   const [availableTags, setAvailableTags] = useState<
-//     { id: number; name: string }[]
-//   >([]);
-//   useEffect(() => {
-//     if (!session && status !== "loading") {
-//       router.push("/login");
-//     } else if (session) {
-//       fetchDocuments();
-//       fetchTags();
-//     }
-//   }, [session, status, router]);
-
-//   const fetchDocuments = async () => {
-//     const res = await fetch("/api/documents");
-//     if (res.ok) {
-//       const data = await res.json();
-//       setDocuments(
-//         data.map(
-//           (doc: Document) => ({
-//             ...doc,
-//             tag: doc.tags.map((tag) => ({ id: tag.id, name: tag.name })),
-//           })
-//         )
-//       );
-//     }
-//   };
-
-//   const fetchTags = async () => {
-//     const res = await fetch("/api/tags");
-//     if (res.ok) {
-//       const data = await res.json();
-//       setAvailableTags(data);
-//     }
-//   };
-//   const handleFilterChange = (tag: string) => {
-//     setFilterTags((prev) =>
-//       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
-//     );
-//   };
-
-//   const filteredDocuments = documents.filter(
-//     (doc: Document & { tags: { id: number; name: string }[] }) =>
-//       filterTags.length === 0
-//         ? true
-//         : doc.tags.some((tag) => filterTags.includes(tag.name))
-//   );
-
-//   return (
-//     <main className="p-8 bg-slate-200 h-screen w-full ">
-//       <div className="flex justify-between items-center mb-6 ">
-//         <h1 className="text-2xl font-bold text-blue-600">
-//           Welcome to your Dashboard,{" "}
-//           {session?.user?.name || session?.user?.email}!
-//         </h1>
-//         <button
-//           onClick={() => setShowUploadModal(true)}
-//           className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-//         >
-//           Upload Document
-//         </button>
-//       </div>
-//       <div role="tablist" className="tabs tabs-lifted">
-//         {availableTags.map((tag: any, index: number) => (
-//           <React.Fragment key={tag.id}>
-//             <input
-//               type="radio"
-//               name="my_tabs_2"
-//               role="tab"
-//               className="tab "
-//               aria-label={tag.name}
-//               defaultChecked={index === 0}
-//             />
-//             <div
-//               role="tabpanel"
-//               className="tab-content bg-transparent border-base-300 rounded-box p-6"
-//             >
-//               <table className="table   border-opacity-40 rounded-lg">
-//                 <tbody>
-//                   {filteredDocuments.map((doc: Document) => (
-//                     <tr key={doc.id} className="border-t text-xl">
-//                       <td className="px-4 py-2 ">{doc.title}</td>
-
-//                       <td className="px-4 py-2">
-//                         {new Date(doc.createdAt).toLocaleString()}
-//                       </td>
-//                       <td className="px-4 py-2">
-//                         <a
-//                           href={doc.fileUrl}
-//                           target="_blank"
-//                           rel="noopener noreferrer"
-//                           className="text-blue-600 hover:underline"
-//                         >
-//                           View
-//                         </a>
-//                       </td>
-//                     </tr>
-//                   ))}
-//                 </tbody>
-//               </table>
-//             </div>
-//           </React.Fragment>
-//         ))}
-//       </div>
-
-//       {/* Documents Table */}
-
-//       {showUploadModal && (
-//         <UploadDocumentModal
-//           onClose={() => {
-//             setShowUploadModal(false);
-//             fetchDocuments(); // Refresh documents after upload
-//           }}
-//         />
-//       )}
-//     </main>
-//   );
-// }
-// app/dashboard/page.tsx
 "use client";
 
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
-import UploadDocumentModal from "@/components/UploadDocumentModal";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { FileIcon, CalendarIcon } from "lucide-react";
+import { RadialBar, RadialBarChart, PolarAngleAxis } from "recharts";
+import { ChartContainer } from "@/components/ui/chart";
 
-// Define an interface that includes the tag relation
-interface DocumentWithTag {
+interface Document {
   id: number;
   title: string;
-  fileUrl: string;
-  tag: {
-    id: number;
-    name: string;
-  };
-  userId: number;
-  createdAt: string; // Or Date if you're handling dates
-  updatedAt: string; // Or Date if you're handling dates
+  createdAt: string;
 }
 
-export default function DashboardPage() {
+export default function Dashboard() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const [documents, setDocuments] = useState<DocumentWithTag[]>([]);
-  const [showUploadModal, setShowUploadModal] = useState(false);
-  const [availableTags, setAvailableTags] = useState<
-    { id: number; name: string }[]
-  >([]);
-  const [activeTab, setActiveTab] = useState<number>(0); // 0 for 'All' tab
+  const [documents, setDocuments] = useState<Document[]>([]);
 
   useEffect(() => {
     if (!session && status !== "loading") {
       router.push("/login");
     } else if (session) {
       fetchDocuments();
-      fetchTags();
     }
   }, [session, status, router]);
 
   const fetchDocuments = async () => {
-    const res = await fetch("/api/documents");
-    if (res.ok) {
-      const data = await res.json();
-      setDocuments(data); // Assume data includes the 'tag' relation
-    }
+    // Mock fetch - replace with actual API call
+    const mockDocuments = [
+      {
+        id: 1,
+        title: "Q2 Financial Report",
+        createdAt: "2023-06-01T12:00:00Z",
+      },
+      {
+        id: 2,
+        title: "Marketing Strategy 2023",
+        createdAt: "2023-06-02T14:30:00Z",
+      },
+      { id: 3, title: "Product Roadmap", createdAt: "2023-06-03T09:15:00Z" },
+      {
+        id: 4,
+        title: "Team Performance Review",
+        createdAt: "2023-06-04T11:45:00Z",
+      },
+    ];
+    setDocuments(mockDocuments);
   };
 
-  const fetchTags = async () => {
-    const res = await fetch("/api/tags");
-    if (res.ok) {
-      const data = await res.json();
-      // Add an 'All' tab
-      setAvailableTags([{ id: 0, name: "All" }, ...data]);
-    }
-  };
-
-  const filteredDocuments = documents.filter((doc) =>
-    activeTab === 0 ? true : doc.tag.id === activeTab
-  );
+  const dotComplianceScore = 85; // Replace with actual score from your data
 
   return (
-    <main className="p-8 bg-slate-200 h-screen w-full ">
-      <div className="flex justify-between items-center mb-6 ">
-        <h1 className="text-2xl font-bold text-blue-600">
-          Welcome to your Dashboard,{" "}
-          {session?.user?.name || session?.user?.email}!
+    <div className="min-h-screen bg-background p-8">
+      <div className="max-w-7xl mx-auto space-y-8">
+        <h1 className="text-4xl font-bold text-primary">
+          Welcome, {session?.user?.name || session?.user?.email}!
         </h1>
-        <button
-          onClick={() => setShowUploadModal(true)}
-          className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-        >
-          Upload Document
-        </button>
-      </div>
 
-      {/* Tabs for filtering by tag */}
-      <div role="tablist" className="tabs tabs-lifted">
-        {availableTags.map((tag) => (
-          <button
-            key={tag.id}
-            onClick={() => setActiveTab(tag.id)}
-            className={`tab ${activeTab === tag.id ? "active" : ""}`}
-          >
-            {tag.name}
-          </button>
-        ))}
-      </div>
-
-      {/* Documents Table */}
-      <div>
-        <table className="table border-opacity-40 rounded-lg">
-          <tbody>
-            {filteredDocuments.map((doc) => (
-              <tr key={doc.id} className="border-t text-xl">
-                <td className="px-4 py-2">{doc.title}</td>
-                <td className="px-4 py-2">
-                  {new Date(doc.createdAt).toLocaleString()}
-                </td>
-                <td className="px-4 py-2">
-                  <a
-                    href={doc.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-blue-600 hover:underline"
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <Card className="col-span-1 md:col-span-2 lg:col-span-2">
+            <CardHeader>
+              <CardTitle>Recent Documents</CardTitle>
+              <CardDescription>Your latest uploads and edits</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ScrollArea className="h-[300px] w-full pr-4">
+                {documents.map((doc) => (
+                  <div
+                    key={doc.id}
+                    className="flex items-center space-x-4 mb-4"
                   >
-                    View
-                  </a>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                    <FileIcon className="h-6 w-6 text-muted-foreground" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        {doc.title}
+                      </p>
+                      <p className="text-sm text-muted-foreground flex items-center">
+                        <CalendarIcon className="h-3 w-3 mr-1" />
+                        {new Date(doc.createdAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </ScrollArea>
+              <Button
+                onClick={() => router.push("/dashboard/documents")}
+                className="mt-4 w-full"
+              >
+                View All Documents
+              </Button>
+            </CardContent>
+          </Card>
 
-      {showUploadModal && (
-        <UploadDocumentModal
-          onClose={() => {
-            setShowUploadModal(false);
-            fetchDocuments(); // Refresh documents after upload
-          }}
-        />
-      )}
-    </main>
+          <Card>
+            <CardHeader>
+              <CardTitle>DOT Compliance Status</CardTitle>
+              <CardDescription>Your current compliance score</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ChartContainer
+                config={{
+                  score: {
+                    label: "Score",
+                    color: "hsl(var(--chart-1))",
+                  },
+                }}
+                className="w-full aspect-square"
+              >
+                <RadialBarChart
+                  width={300}
+                  height={300}
+                  cx="50%"
+                  cy="50%"
+                  innerRadius="60%"
+                  outerRadius="80%"
+                  data={[{ name: "score", value: dotComplianceScore }]}
+                  startAngle={180}
+                  endAngle={0}
+                >
+                  <PolarAngleAxis
+                    type="number"
+                    domain={[0, 100]}
+                    angleAxisId={0}
+                    tick={false}
+                  />
+                  <RadialBar
+                    background
+                    dataKey="value"
+                    cornerRadius={30}
+                    fill="var(--color-score)"
+                  />
+                  <text
+                    x="50%"
+                    y="50%"
+                    textAnchor="middle"
+                    dominantBaseline="middle"
+                    className="fill-primary text-4xl font-bold"
+                  >
+                    {dotComplianceScore}
+                  </text>
+                </RadialBarChart>
+              </ChartContainer>
+              <p className="text-center mt-4 text-sm text-muted-foreground">
+                Your DOT compliance score is {dotComplianceScore}/100
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card className="col-span-1 md:col-span-2 lg:col-span-3">
+            <CardHeader>
+              <CardTitle>Storage Usage</CardTitle>
+              <CardDescription>75% of 1GB used</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <Progress value={75} className="w-full" />
+                <p className="text-sm text-muted-foreground">
+                  750MB used out of 1GB
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    </div>
   );
 }
+// "use client";
+
+// import { useSession } from "next-auth/react";
+// import { useRouter } from "next/navigation";
+// import React, { useState, useEffect } from "react";
+// import {
+//   Card,
+//   CardContent,
+//   CardDescription,
+//   CardHeader,
+//   CardTitle,
+// } from "@/components/ui/card";
+// import { Button } from "@/components/ui/button";
+// import { Progress } from "@/components/ui/progress";
+// import { ScrollArea } from "@/components/ui/scroll-area";
+// import { FileIcon, CalendarIcon, BarChartIcon } from "lucide-react";
+
+// interface Document {
+//   id: number;
+//   title: string;
+//   createdAt: string;
+// }
+
+// export default function Dashboard() {
+//   const { data: session, status } = useSession();
+//   const router = useRouter();
+//   const [documents, setDocuments] = useState<Document[]>([]);
+
+//   useEffect(() => {
+//     if (!session && status !== "loading") {
+//       router.push("/login");
+//     } else if (session) {
+//       fetchDocuments();
+//     }
+//   }, [session, status, router]);
+
+//   const fetchDocuments = async () => {
+//     // Mock fetch - replace with actual API call
+//     const mockDocuments = [
+//       {
+//         id: 1,
+//         title: "Q2 Financial Report",
+//         createdAt: "2023-06-01T12:00:00Z",
+//       },
+//       {
+//         id: 2,
+//         title: "Marketing Strategy 2023",
+//         createdAt: "2023-06-02T14:30:00Z",
+//       },
+//       { id: 3, title: "Product Roadmap", createdAt: "2023-06-03T09:15:00Z" },
+//       {
+//         id: 4,
+//         title: "Team Performance Review",
+//         createdAt: "2023-06-04T11:45:00Z",
+//       },
+//     ];
+//     setDocuments(mockDocuments);
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-background p-8">
+//       <div className="max-w-7xl mx-auto space-y-8">
+//         <h1 className="text-4xl font-bold text-primary">
+//           Welcome, {session?.user?.name || session?.user?.email}!
+//         </h1>
+
+//         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+//           <Card className="col-span-1 md:col-span-2 lg:col-span-2">
+//             <CardHeader>
+//               <CardTitle>Recent Documents</CardTitle>
+//               <CardDescription>Your latest uploads and edits</CardDescription>
+//             </CardHeader>
+//             <CardContent>
+//               <ScrollArea className="h-[300px] w-full pr-4">
+//                 {documents.map((doc) => (
+//                   <div
+//                     key={doc.id}
+//                     className="flex items-center space-x-4 mb-4"
+//                   >
+//                     <FileIcon className="h-6 w-6 text-muted-foreground" />
+//                     <div className="space-y-1">
+//                       <p className="text-sm font-medium leading-none">
+//                         {doc.title}
+//                       </p>
+//                       <p className="text-sm text-muted-foreground flex items-center">
+//                         <CalendarIcon className="h-3 w-3 mr-1" />
+//                         {new Date(doc.createdAt).toLocaleDateString()}
+//                       </p>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </ScrollArea>
+//               <Button
+//                 onClick={() => router.push("/dashboard/documents")}
+//                 className="mt-4 w-full"
+//               >
+//                 View All Documents
+//               </Button>
+//             </CardContent>
+//           </Card>
+
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Storage Usage</CardTitle>
+//               <CardDescription>75% of 1GB used</CardDescription>
+//             </CardHeader>
+//             <CardContent>
+//               <div className="space-y-4">
+//                 <Progress value={75} className="w-full" />
+//                 <p className="text-sm text-muted-foreground">
+//                   750MB used out of 1GB
+//                 </p>
+//               </div>
+//             </CardContent>
+//           </Card>
+
+//           <Card>
+//             <CardHeader>
+//               <CardTitle>Future Content</CardTitle>
+//               <CardDescription>Coming soon</CardDescription>
+//             </CardHeader>
+//             <CardContent className="flex items-center justify-center h-[200px]">
+//               <BarChartIcon className="h-16 w-16 text-muted-foreground" />
+//             </CardContent>
+//           </Card>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }

@@ -44,7 +44,7 @@ const ContactPage: React.FC = () => {
             <div className="mb-6">
               <label
                 htmlFor="name"
-                className="block text-white font-semibold mb-2 flex items-center"
+                className=" text-white font-semibold mb-2 flex items-center"
               >
                 <User className="mr-2" size={18} />
                 Name
@@ -63,7 +63,7 @@ const ContactPage: React.FC = () => {
             <div className="mb-6">
               <label
                 htmlFor="email"
-                className="block text-white font-semibold mb-2 flex items-center"
+                className=" text-white font-semibold mb-2 flex items-center"
               >
                 <Mail className="mr-2" size={18} />
                 Email
@@ -82,7 +82,7 @@ const ContactPage: React.FC = () => {
             <div className="mb-6">
               <label
                 htmlFor="message"
-                className="block text-white font-semibold mb-2 flex items-center"
+                className=" text-white font-semibold mb-2 flex items-center"
               >
                 <MessageSquare className="mr-2" size={18} />
                 Message

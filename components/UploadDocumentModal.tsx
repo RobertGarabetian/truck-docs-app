@@ -79,7 +79,7 @@ export default function UploadDocumentModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Upload Document</h2>
         <form onSubmit={handleSubmit}>
@@ -90,6 +90,7 @@ export default function UploadDocumentModal({
               setTitle(res[0].name);
               console.log("Files: ", res);
               alert("Upload Completed");
+              handleSubmit;
             }}
             onUploadError={(error: Error) => {
               // Do something with the error.
