@@ -105,7 +105,7 @@ export default function Dashboard() {
 
           <Card>
             <CardHeader>
-              <CardTitle>DOT Compliance Status</CardTitle>
+              <CardTitle>TruckDocs&trade; Compliance Status</CardTitle>
               <CardDescription>Your current compliance score</CardDescription>
             </CardHeader>
             <CardContent>
