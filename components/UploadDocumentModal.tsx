@@ -14,10 +14,11 @@ export default function UploadDocumentModal({
 }: {
   onClose: () => void;
 }) {
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
-  const [fileUrl, setFileUrl] = useState<string | null>(null);
+  // const [fileUrl, setFileUrl] = useState<string | null>("");
+  // const [fileUrl, setFileUrl] = useState("");
 
   // Fetch available tags when the component mounts
   useEffect(() => {
@@ -44,12 +45,7 @@ export default function UploadDocumentModal({
     fetchTags();
   }, []);
 
-  const handleSubmit = async () => {
-    if (!fileUrl) {
-      alert("Please select file");
-      return;
-    }
-
+  const handleSubmit = async (fileUrl: string, title: string) => {
     const documentData = {
       title: title,
       fileUrl: fileUrl, // The file URL after the upload is complete
@@ -66,14 +62,14 @@ export default function UploadDocumentModal({
       });
 
       if (res.ok) {
-        alert("Document uploaded successfully!");
+        console.log("Document uploaded successfully!");
         onClose();
       } else {
         const errorData = await res.json();
         alert(errorData.error || "Upload failed.");
       }
     } catch (error) {
-      console.error("Error submitting document:", error);
+      console.error("DB related error when submitting document:", error);
       alert("An error occurred during the upload.");
     }
   };
@@ -82,23 +78,7 @@ export default function UploadDocumentModal({
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Upload Document</h2>
-        <form onSubmit={handleSubmit}>
-          <UploadDropzone
-            endpoint="uploader"
-            onClientUploadComplete={(res) => {
-              setFileUrl(res[0].url);
-              setTitle(res[0].name);
-              console.log("Files: ", res);
-              alert("Upload Completed");
-              handleSubmit;
-            }}
-            onUploadError={(error: Error) => {
-              // Do something with the error.
-              alert(`ERROR! ${error.message}`);
-            }}
-            config={{ appendOnPaste: true, mode: "manual" }}
-          />
-
+        <div>
           {/* Tag Selection */}
           <div className="mb-4">
             <label className="block text-gray-700 mb-2 text-xl">Tag</label>
@@ -114,6 +94,17 @@ export default function UploadDocumentModal({
               ))}
             </select>
           </div>
+          <UploadDropzone
+            endpoint="uploader"
+            onClientUploadComplete={(res) => {
+              console.log("Upload Completed");
+              handleSubmit(res[0].url, res[0].name);
+            }}
+            onUploadError={(error: Error) => {
+              alert(`ERROR! ${error.message}`);
+            }}
+            config={{ appendOnPaste: true, mode: "manual" }}
+          />
 
           {/* Buttons */}
           <div className="flex justify-end space-x-2">
@@ -124,14 +115,8 @@ export default function UploadDocumentModal({
             >
               Cancel
             </button>
-            <button
-              type="submit"
-              className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-500"
-            >
-              Upload
-            </button>
           </div>
-        </form>
+        </div>
       </div>
     </div>
   );
