@@ -1,9 +1,30 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Send, CheckCircle, User, Mail, MessageSquare } from "lucide-react";
 
 const ContactPage: React.FC = () => {
+  const backgroundElements = useMemo(() => {
+    return [...Array(5)].map((_, i) => ({
+      key: i,
+      style: {
+        width: Math.random() * 300 + 50,
+        height: Math.random() * 300 + 50,
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+      },
+      animate: {
+        y: [0, Math.random() * 100 - 50],
+        x: [0, Math.random() * 100 - 50],
+        scale: [1, Math.random() + 0.5],
+      },
+      transition: {
+        duration: Math.random() * 10 + 10,
+        repeat: Infinity,
+        repeatType: "reverse",
+      },
+    }));
+  }, []);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -124,26 +145,13 @@ const ContactPage: React.FC = () => {
         )}
       </div>
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0">
-        {[...Array(5)].map((_, i) => (
+        {backgroundElements.map((element) => (
           <motion.div
-            key={i}
+            key={element.key}
             className="absolute bg-white rounded-full opacity-10"
-            style={{
-              width: Math.random() * 300 + 50,
-              height: Math.random() * 300 + 50,
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-            }}
-            animate={{
-              y: [0, Math.random() * 100 - 50],
-              x: [0, Math.random() * 100 - 50],
-              scale: [1, Math.random() + 0.5],
-            }}
-            transition={{
-              duration: Math.random() * 10 + 10,
-              repeat: Infinity,
-              repeatType: "reverse",
-            }}
+            style={element.style}
+            animate={element.animate}
+            transition={element.transition}
           />
         ))}
       </div>
