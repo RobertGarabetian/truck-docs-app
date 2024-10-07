@@ -59,7 +59,7 @@ const config: Config = withUt({
   		}
   	}
   },
-  plugins: [    require('daisyui'),
+  plugins: [
       require("tailwindcss-animate")
 ],
 });
