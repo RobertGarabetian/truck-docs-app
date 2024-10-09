@@ -31,5 +31,5 @@ model Document {
 model Tag {
   id        Int        @id @default(autoincrement())
   name      String     @unique
-  documents Document[] // Relation to Document model
+  documents Document[] 
 }
