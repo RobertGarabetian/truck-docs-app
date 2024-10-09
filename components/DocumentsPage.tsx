@@ -1,4 +1,4 @@
-// components/DashboardContent.tsx
+// // components/DashboardContent.tsx
 "use client";
 
 import { useState } from "react";
@@ -21,6 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DocumentWithTag, Tag } from "@/types/types"; // Adjust the import path accordingly
+import { useRouter } from "next/router";
 
 interface DashboardContentProps {
   documents: DocumentWithTag[];
@@ -37,7 +38,6 @@ export default function DocumentsPage({
   const filteredDocuments = documents.filter((doc) =>
     activeTab === "0" ? true : doc.tag.id.toString() === activeTab
   );
-
   return (
     <div className="min-h-screen bg-background">
       <div className="container mx-auto p-6 space-y-8">
@@ -111,7 +111,6 @@ export default function DocumentsPage({
           <UploadDocumentModal
             onClose={() => {
               setShowUploadModal(false);
-              // Optionally refetch documents here if they can change after upload
             }}
           />
         )}
