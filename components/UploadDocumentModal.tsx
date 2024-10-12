@@ -8,12 +8,14 @@ interface Tag {
   id: number;
   name: string;
 }
-
+interface UploadDocumentModalProps {
+  onClose: () => void;
+  onUploadSuccess: () => void;
+}
 export default function UploadDocumentModal({
   onClose,
-}: {
-  onClose: () => void;
-}) {
+  onUploadSuccess,
+}: UploadDocumentModalProps) {
   // const [title, setTitle] = useState("");
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
@@ -63,6 +65,7 @@ export default function UploadDocumentModal({
 
       if (res.ok) {
         console.log("Document uploaded successfully!");
+        onUploadSuccess();
         onClose();
       } else {
         const errorData = await res.json();

@@ -21,7 +21,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { DocumentWithTag, Tag } from "@/types/types"; // Adjust the import path accordingly
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 interface DashboardContentProps {
   documents: DocumentWithTag[];
@@ -34,6 +34,7 @@ export default function DocumentsPage({
 }: DashboardContentProps) {
   const [activeTab, setActiveTab] = useState<string>("0");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const router = useRouter(); // Initialize router
 
   const filteredDocuments = documents.filter((doc) =>
     activeTab === "0" ? true : doc.tag.id.toString() === activeTab
@@ -94,6 +95,17 @@ export default function DocumentsPage({
                             rel="noopener noreferrer"
                             className="flex items-center text-primary hover:underline"
                           >
+                            Edit
+                            <ExternalLinkIcon className="ml-1 h-4 w-4" />
+                          </a>
+                        </TableCell>
+                        <TableCell>
+                          <a
+                            href={doc.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="flex items-center text-primary hover:underline"
+                          >
                             View
                             <ExternalLinkIcon className="ml-1 h-4 w-4" />
                           </a>
@@ -111,6 +123,10 @@ export default function DocumentsPage({
           <UploadDocumentModal
             onClose={() => {
               setShowUploadModal(false);
+            }}
+            onUploadSuccess={() => {
+              setShowUploadModal(false);
+              router.refresh(); // Refresh data after successful upload
             }}
           />
         )}

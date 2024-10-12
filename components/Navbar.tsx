@@ -8,9 +8,10 @@ export default function Navbar() {
   const { data: session } = useSession();
 
   return (
-    <nav
+    <nav className={` z-50 shadow fixed bg-teal-600 w-screen`}>
+      {/* <nav
       className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-screen`}
-    >
+    > */}
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
           href={session ? "/dashboard" : "/"}
