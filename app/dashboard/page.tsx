@@ -30,7 +30,7 @@ export default async function DashboardPage() {
   ]);
 
   const dotComplianceScore = 85; // Replace with actual data
-
+  console.log(tags);
   return (
     <Dashboard
       user={session.user}
