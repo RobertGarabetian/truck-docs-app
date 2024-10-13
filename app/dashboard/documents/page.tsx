@@ -3,7 +3,7 @@ import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
 import prisma from "@/lib/prisma";
 import { DocumentWithTag, Tag } from "@/types/types"; // Adjust the import path
-import DocumentsPage from "@/components/DocumentsPage";
+import DocumentsPage from "../../../components/DocumentsPage";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function DashboardPage() {
