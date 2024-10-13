@@ -35,7 +35,6 @@ export default async function DashboardPage() {
     <Dashboard
       user={session.user}
       documents={documents}
-      tags={tags}
       dotComplianceScore={dotComplianceScore}
     />
   );

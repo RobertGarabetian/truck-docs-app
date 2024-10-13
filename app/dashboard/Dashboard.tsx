@@ -32,13 +32,11 @@ interface Document {
 interface DashboardProps {
   user: User;
   documents: Document[];
-  tags: Tag[];
   dotComplianceScore: number;
 }
 export default function Dashboard({
   user,
   documents,
-  tags,
   dotComplianceScore,
 }: DashboardProps) {
   const router = useRouter();
@@ -70,6 +68,7 @@ export default function Dashboard({
                       <p className="text-sm font-medium leading-none">
                         {doc.title}
                       </p>
+
                       <p className="text-sm text-muted-foreground flex items-center">
                         <CalendarIcon className="h-3 w-3 mr-1" />
                         {new Date(doc.createdAt).toLocaleDateString()}
