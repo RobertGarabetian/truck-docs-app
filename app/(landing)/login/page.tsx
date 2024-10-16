@@ -24,18 +24,21 @@ export default function LoginPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const result = await signIn("credentials", {
+        redirect: false,
+        email,
+        password,
+      });
 
-    const result = await signIn("credentials", {
-      redirect: false,
-      email,
-      password,
-    });
-
-    if (result?.error) {
-      setError("Invalid email or password");
-    } else {
-      router.push("/dashboard");
+      if (result?.error) {
+        setError("Invalid email or password");
+      }
+    } catch (error) {
+      console.log(error);
+      return;
     }
+    router.push("/dashboard");
   };
 
   return (
