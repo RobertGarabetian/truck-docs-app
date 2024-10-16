@@ -37,7 +37,7 @@ export default function Navbar() {
               </Link>
               <button
                 onClick={() => signOut()}
-                className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-500 transition-colors"
+                className="bg-transparent text-white px-4 py-2 border border-white rounded-2xl hover:text-teal-600 hover:bg-white transition-colors"
               >
                 Sign Out
               </button>
@@ -49,7 +49,7 @@ export default function Navbar() {
               </Link>
               <Link
                 href="/signup"
-                className="bg-blue-600 text-white px-4 py-2 rounded-2xl hover:bg-blue-500 transition-colors"
+                className="bg-transparent text-white px-4 py-2 border border-white rounded-2xl hover:text-teal-600 hover:bg-white transition-colors"
               >
                 Sign Up
               </Link>

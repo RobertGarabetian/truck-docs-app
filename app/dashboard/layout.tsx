@@ -52,7 +52,7 @@ export default function DashboardLayout({
               <li>
                 <button
                   onClick={() => signOut()}
-                  className={`block py-2.5 px-4 hover:bg-slate-300 `}
+                  className={`block py-2.5 px-4 hover:bg-slate-300 w-full text-left`}
                 >
                   Logout
                 </button>
