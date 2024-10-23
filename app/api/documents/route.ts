@@ -17,7 +17,7 @@ export const GET = async (req: NextRequest) => {
 
   try {
     const documents = await prisma.document.findMany({
-      // where: { userId },
+      where: { userId },
       include: { tag: true },
       orderBy: { createdAt: 'desc' },
     });

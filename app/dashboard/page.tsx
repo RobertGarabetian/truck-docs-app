@@ -3,13 +3,11 @@ import Dashboard from "./Dashboard";
 import prisma from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
-import { NextResponse } from "next/server";
 
 export default async function DashboardPage() {
   const user = await currentUser();
   if (!user) {
     redirect("/sign-in");
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   const userId = parseInt(user.id, 10);
