@@ -2,19 +2,17 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
-import { getServerSession } from 'next-auth';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { auth, currentUser } from "@clerk/nextjs/server";
 
 export const runtime = 'nodejs';
 
 export const GET = async (req: NextRequest) => {
-  const session = await getServerSession({ req, ...authOptions });
-
-  if (!session || !session.user || !session.user.id) {
+  const user = await currentUser()
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const userId = parseInt(session.user.id, 10);
+  const userId = parseInt(user.id, 10);
   console.log(userId);
 
   try {
@@ -32,13 +30,13 @@ export const GET = async (req: NextRequest) => {
 };
 export async function POST(req: Request) {
   const { title, fileUrl, tagId } = await req.json();
-const session = await getServerSession({ req, ...authOptions });
+  const user = await currentUser()
 
-  if (!session || !session.user || !session.user.id) {
+  if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const userId = parseInt(session.user.id, 10);
+  const userId = parseInt(user.id, 10);
   console.log(userId);
   try {
     const document = await prisma.document.create({

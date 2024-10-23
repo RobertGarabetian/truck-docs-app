@@ -2,21 +2,17 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { SignedIn, SignedOut } from "@clerk/nextjs";
+import { UserButton } from "@clerk/nextjs";
 
 export default function Navbar() {
-  const { data: session } = useSession();
-
   return (
     <nav className={` z-50 shadow fixed bg-teal-600 w-screen`}>
       {/* <nav
       className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-screen`}
     > */}
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-        <Link
-          href={session ? "/dashboard" : "/"}
-          className=" text-2xl font-bold text-white"
-        >
+        <Link href={"/"} className=" text-2xl font-bold text-white">
           TruckDocs
         </Link>
 
@@ -30,31 +26,31 @@ export default function Navbar() {
           <Link href="/contact" className="hover:underline">
             Contact
           </Link>
-          {session ? (
-            <>
-              <Link href="/dashboard" className="hover:underline">
-                Dashboard
-              </Link>
-              <button
-                onClick={() => signOut()}
-                className="bg-transparent text-white px-4 py-2 border border-white rounded-2xl hover:text-teal-600 hover:bg-white transition-colors"
-              >
-                Sign Out
-              </button>
-            </>
-          ) : (
-            <>
-              <Link href="/login" className="hover:underline">
-                Sign In
-              </Link>
-              <Link
-                href="/signup"
-                className="bg-transparent text-white px-4 py-2 border border-white rounded-2xl hover:text-teal-600 hover:bg-white transition-colors"
-              >
-                Sign Up
-              </Link>
-            </>
-          )}
+          <SignedIn>
+            <Link href="/dashboard" className="hover:underline">
+              Dashboard
+            </Link>
+
+            <UserButton
+              afterSignOutUrl="/"
+              appearance={{
+                elements: {
+                  userButtonAvatarBox: "size-6",
+                },
+              }}
+            />
+          </SignedIn>
+          <SignedOut>
+            <Link href="/sign-in" className="hover:underline">
+              Sign In
+            </Link>
+            <Link
+              href="/sign-up"
+              className="bg-transparent text-white px-4 py-2 border border-white rounded-2xl hover:text-teal-600 hover:bg-white transition-colors"
+            >
+              Sign Up
+            </Link>
+          </SignedOut>
         </div>
       </div>
     </nav>

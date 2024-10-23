@@ -1,22 +1,11 @@
 //app/api/uploadthing
 import { createUploadthing, type FileRouter } from "uploadthing/next";
 import { UploadThingError } from "uploadthing/server";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { currentUser } from "@clerk/nextjs/server";
 
 const f = createUploadthing();
 export const runtime = "nodejs";
 
-const auth = async (req: Request) => {
-  const session = await getServerSession({ req, ...authOptions });
-
-  if (session && session.user && session.user.id) {
-    const userId = parseInt(session.user.id, 10); // Base 10
-    return { id: userId };
-  } else {
-    return null;
-  }
-};
 // FileRouter for your app, can contain multiple FileRoutes
 // core.ts
 
@@ -30,7 +19,7 @@ export const ourFileRouter = {
   })
   .middleware(async ({ req }) => {
     // This code runs on your server before upload
-    const user = await auth(req);
+    const user = await currentUser();
     // If you throw, the user will not be able to upload
     if (!user) throw new UploadThingError("Unauthorized");
     // Whatever is returned here is accessible in onUploadComplete as `metadata`
