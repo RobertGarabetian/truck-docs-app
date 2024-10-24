@@ -3,15 +3,13 @@
 
 import React from "react";
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
+import { UserButton } from "@clerk/nextjs";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session } = useSession();
-
   return (
     <div className="flex h-screen w-screen">
       {/* Side Navigation */}
@@ -19,7 +17,7 @@ export default function DashboardLayout({
         <ul className=" flex-1 menu  rounded-box bg-transparent">
           <li className="space-y-4">
             <Link
-              href={session ? "/dashboard" : "/"}
+              href={"/dashboard"}
               className=" menu-title text-xl font-bold text-blue-600"
             >
               TruckDocs
@@ -50,12 +48,7 @@ export default function DashboardLayout({
                 </Link>
               </li>
               <li>
-                <button
-                  onClick={() => signOut()}
-                  className={`block py-2.5 px-4 hover:bg-slate-300 w-full text-left`}
-                >
-                  Logout
-                </button>
+                <UserButton />
               </li>
             </ul>
           </li>

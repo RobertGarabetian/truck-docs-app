@@ -8,7 +8,9 @@ generator client {
 }
 
 model User {
-  id          Int        @id @default(autoincrement())
+  user_id     String    @id
+  firstName   String
+  lastName   String
   companyName String
   email       String     @unique
   password    String
@@ -21,8 +23,8 @@ model Document {
   fileUrl   String
   tag       Tag      @relation(fields: [tagId], references: [id])
   tagId     Int
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
+  user      User     @relation(fields: [user_id], references: [user_id])
+  user_id    String   
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

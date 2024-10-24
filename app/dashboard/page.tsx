@@ -10,16 +10,18 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  const userId = parseInt(user.id, 10);
+  const userID = parseInt(user.id, 10);
 
   const [documents, tags] = await Promise.all([
     prisma.document.findMany({
-      where: { userId },
+      where: {
+        userId: userID, // Assuming `user.id` is an integer
+      },
       include: {
-        tag: true,
+        tag: true, // Assuming there's a relation to `tag`
       },
     }),
-    prisma.tag.findMany(),
+    prisma.tag.findMany(), // Fetches all tags
   ]);
 
   const dotComplianceScore = 85; // Replace with actual data
