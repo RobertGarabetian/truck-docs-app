@@ -11,8 +11,9 @@ model User {
   user_id     String    @id
   firstName   String
   lastName    String
-  companyName String
+  companyName String?
   email       String     @unique
+  dotComplianceScore Int
   documents   Document[] // Relation to Document model
 }
 
