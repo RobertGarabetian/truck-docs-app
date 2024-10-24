@@ -36,7 +36,7 @@ interface DashboardProps {
 }
 export default function Dashboard({
   user,
-  documents,
+  documents = [],
   dotComplianceScore,
 }: DashboardProps) {
   const router = useRouter();

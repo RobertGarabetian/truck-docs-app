@@ -76,6 +76,7 @@ export default function Page() {
             firstName: firstName,
             lastName: lastName,
             companyName: companyName,
+            password: password,
           },
         });
 

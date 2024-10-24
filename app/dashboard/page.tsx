@@ -10,12 +10,10 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  const userID = parseInt(user.id, 10);
-
   const [documents, tags] = await Promise.all([
     prisma.document.findMany({
       where: {
-        userId: userID, // Assuming `user.id` is an integer
+        user_id: user.id,
       },
       include: {
         tag: true, // Assuming there's a relation to `tag`
