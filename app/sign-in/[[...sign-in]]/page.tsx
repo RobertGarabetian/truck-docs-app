@@ -44,7 +44,7 @@ export default function SignInForm() {
 
   // Display a form to capture the user's email and password
   return (
-    <>
+    <div className="flex flex-col justify-center items-center w-screen h-screen">
       <h1>Sign in</h1>
       <form onSubmit={(e) => handleSubmit(e)}>
         <div>
@@ -69,6 +69,6 @@ export default function SignInForm() {
         </div>
         <button type="submit">Sign in</button>
       </form>
-    </>
+    </div>
   );
 }

@@ -1,9 +1,8 @@
 "use client";
 
 import * as React from "react";
-import { useSignUp, useUser } from "@clerk/nextjs";
+import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
-import prisma from "@/lib/prisma";
 
 export default function Page() {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -15,7 +14,6 @@ export default function Page() {
   const [verifying, setVerifying] = React.useState(false);
   const [code, setCode] = React.useState("");
   const router = useRouter();
-  const { user } = useUser();
 
   // Handle submission of the sign-up form
   const handleSubmit = async (e: React.FormEvent) => {
@@ -57,43 +55,29 @@ export default function Page() {
         code,
       });
 
-      // If verification was completed, set the session to active
-      // and redirect the user
       if (signUpAttempt.status === "complete") {
         await setActive({ session: signUpAttempt.createdSessionId });
-
-        await prisma.user.upsert({
-          where: { user_id: user?.id },
-          update: {
-            email: emailAddress,
-            firstName: firstName,
-            lastName: lastName,
-            companyName: companyName,
+        await fetch("/api/create-user", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-          create: {
-            user_id: user?.id || "",
-            email: emailAddress,
-            firstName: firstName,
-            lastName: lastName,
-            companyName: companyName,
-            password: password,
-          },
+          body: JSON.stringify({
+            emailAddress,
+            companyName,
+            firstName,
+            lastName,
+          }),
         });
-
         router.push("/dashboard");
       } else {
-        // If the status is not complete, check why. User may need to
-        // complete further steps.
         console.error(JSON.stringify(signUpAttempt, null, 2));
       }
     } catch (err: unknown) {
-      // See https://clerk.com/docs/custom-flows/error-handling
-      // for more info on error handling
       console.error("Error:", JSON.stringify(err, null, 2));
     }
   };
 
-  // Display the verification form to capture the OTP code
   if (verifying) {
     return (
       <div className="w-screen h-screen flex flex-col justify-center items-center">
@@ -112,7 +96,6 @@ export default function Page() {
     );
   }
 
-  // Display the initial sign-up form to capture the email and password
   return (
     <div className="w-screen h-screen flex flex-col justify-center items-center">
       <h1>Sign up</h1>

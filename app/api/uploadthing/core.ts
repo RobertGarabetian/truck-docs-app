@@ -17,7 +17,7 @@ export const ourFileRouter = {
       maxFileCount: 5 
     },
   })
-  .middleware(async ({ req }) => {
+  .middleware(async () => {
     // This code runs on your server before upload
     const user = await currentUser();
     // If you throw, the user will not be able to upload

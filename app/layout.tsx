@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Providers from "./Providers";
 import { NextSSRPlugin } from "@uploadthing/react/next-ssr-plugin";
 import { extractRouterConfig } from "uploadthing/server";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
@@ -57,12 +56,11 @@ export default function RootLayout({
              */
             routerConfig={extractRouterConfig(ourFileRouter)}
           />
-          <Providers>
-            <div className="flex flex-col items-center w-screen">
-              <NavbarWrapper />
-              {children}
-            </div>
-          </Providers>
+
+          <div className="flex flex-col items-center w-screen">
+            <NavbarWrapper />
+            {children}
+          </div>
         </body>
       </html>
     </ClerkProvider>

@@ -1,6 +1,7 @@
 // app/dashboard/page.jsx
+
 import Dashboard from "./Dashboard";
-import prisma from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
@@ -10,24 +11,28 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  const [documents, tags] = await Promise.all([
+  const [documents] = await Promise.all([
     prisma.document.findMany({
       where: {
-        user_id: user.id,
+        user_id: user.id, // Use 'user_id' as per your schema
       },
       include: {
-        tag: true, // Assuming there's a relation to `tag`
+        tag: true,
       },
     }),
-    prisma.tag.findMany(), // Fetches all tags
+    prisma.tag.findMany(),
   ]);
 
   const dotComplianceScore = 85; // Replace with actual data
-  console.log(tags);
+
   return (
     <Dashboard
-      user={user}
-      documents={documents}
+      user={JSON.parse(JSON.stringify(user))}
+      documents={documents.map((doc) => ({
+        ...doc,
+        createdAt: doc.createdAt.toISOString(), // Convert Dates to strings
+        updatedAt: doc.updatedAt.toISOString(),
+      }))}
       dotComplianceScore={dotComplianceScore}
     />
   );

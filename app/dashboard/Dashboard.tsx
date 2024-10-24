@@ -14,18 +14,14 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileIcon, CalendarIcon } from "lucide-react";
 import { RadialBar, RadialBarChart, PolarAngleAxis } from "recharts";
 import { useRouter } from "next/navigation";
-import { User } from "next-auth";
+import { User, Tag } from "../../types/types";
 
 // Interfaces
-interface Tag {
-  id: number;
-  name: string;
-}
 
 interface Document {
   id: number;
   title: string;
-  createdAt: Date;
+  createdAt: string;
   tag: Tag;
 }
 
@@ -36,7 +32,7 @@ interface DashboardProps {
 }
 export default function Dashboard({
   user,
-  documents = [],
+  documents,
   dotComplianceScore,
 }: DashboardProps) {
   const router = useRouter();
@@ -46,7 +42,7 @@ export default function Dashboard({
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <h1 className="text-4xl font-bold text-primary">
-          Welcome, {user?.name || user?.email}!
+          Welcome, {user?.companyName}!
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

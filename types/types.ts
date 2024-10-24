@@ -15,3 +15,11 @@ export interface DocumentWithTag {
   tagId: number;
   tag: Tag; // Ensure this property is included
 }
+export interface User {
+  user_id: string;
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  email: string;
+  documents: Document[]; // Relation to Document model
+}
