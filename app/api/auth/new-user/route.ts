@@ -39,7 +39,7 @@ export async function GET() {
     return new NextResponse(null, {
       status: 302, // 302 Found - temporary redirect
       headers: {
-        Location: 'http://localhost:3000/dashboard',
+        Location: 'https://truck-docs-app.vercel.app/dashboard',
       },
     });
   }
@@ -48,7 +48,7 @@ export async function GET() {
   return new NextResponse(null, {
     status: 302, // 302 Found - temporary redirect
     headers: {
-      Location: 'http://localhost:3000/dashboard',
+      Location: 'https://truck-docs-app.vercel.app/dashboard',
     },
   });
   
