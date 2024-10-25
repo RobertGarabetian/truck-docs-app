@@ -7,16 +7,15 @@ import { UserButton } from "@clerk/nextjs";
 
 export default function Navbar() {
   return (
-    <nav className={` z-50 shadow fixed bg-teal-600 w-screen`}>
-      {/* <nav
-      className={` z-50 shadow fixed bg-gradient-to-r from-blue-600 to-purple-600 w-screen`}
-    > */}
-      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+    <nav
+      className={` z-50 shadow fixed bg-teal-600 w-screen flex justify-center items-center`}
+    >
+      <div className="container px-4 py-4 flex justify-between items-center">
         <Link href={"/"} className=" text-2xl font-bold text-white">
           TruckDocs
         </Link>
 
-        <div className="space-x-4 text-white">
+        <div className="flex items-center space-x-4 text-white">
           <Link href="/features" className="hover:underline">
             Features
           </Link>
@@ -32,7 +31,6 @@ export default function Navbar() {
             </Link>
 
             <UserButton
-              afterSignOutUrl="/"
               appearance={{
                 elements: {
                   userButtonAvatarBox: "size-6",

@@ -1,9 +1,8 @@
 // app/api/create-user/route.ts
 
 import { NextResponse } from "next/server";
-import { PrismaClient } from '@prisma/client'
+import { prisma } from "@/lib/prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
-const prisma = new PrismaClient();
 
 
 export async function GET() {
@@ -29,25 +28,28 @@ export async function GET() {
         firstName: user.firstName ?? '',
         lastName: user.lastName ?? '',
         email: user.emailAddresses[0].emailAddress ?? '',
+        dotComplianceScore: 50,
       },
     });
   }
+  console.log(dbUser)
+
   
-    if (!dbUser) {
-      return new NextResponse(null, {
-        status: 302, // 302 Found - temporary redirect
-        headers: {
-          Location: 'https://go.bradi.tech/api/auth/new-user',
-        },
-      });
-    }
-    // Perform your Route Handler's logic with the returned user object
-  
+  if (!dbUser) {
     return new NextResponse(null, {
       status: 302, // 302 Found - temporary redirect
       headers: {
-        Location: 'https://go.bradi.tech/dashboard',
+        Location: 'http://localhost:3000/dashboard',
       },
     });
+  }
+    // Perform your Route Handler's logic with the returned user object
+  
+  return new NextResponse(null, {
+    status: 302, // 302 Found - temporary redirect
+    headers: {
+      Location: 'http://localhost:3000/dashboard',
+    },
+  });
   
   }
