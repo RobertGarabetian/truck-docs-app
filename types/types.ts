@@ -1,25 +1,25 @@
-// types.ts or wherever you define your types
-
 export interface Tag {
-    id: number;
-    name: string;
-  }
-  
-export interface DocumentWithTag {
+  id: number;
+  name: string;
+}
+
+export interface Document {
   id: number;
   title: string;
   fileUrl: string;
-  userId: number;
+  user_id: string;
   createdAt: Date;
   updatedAt: Date;
   tagId: number;
-  tag: Tag; // Ensure this property is included
+  tag: Tag;
 }
+
 export interface User {
   user_id: string;
   firstName: string;
   lastName: string;
-  companyName: string;
+  companyName: string | undefined | null;
+  dotComplianceScore: number;
   email: string;
-  documents: Document[]; // Relation to Document model
+  documents: Document[];
 }

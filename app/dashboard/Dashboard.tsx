@@ -12,32 +12,15 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileIcon, CalendarIcon } from "lucide-react";
-import { RadialBar, RadialBarChart, PolarAngleAxis } from "recharts";
 import { useRouter } from "next/navigation";
-import { User, Tag } from "../../types/types";
+import { User } from "../../types/types";
+import { ChartComponent } from "@/components/ComplianceChart";
 
 // Interfaces
 
-interface Document {
-  id: number;
-  title: string;
-  createdAt: string;
-  tag: Tag;
-}
-
-interface DashboardProps {
-  user: User;
-  documents: Document[];
-  dotComplianceScore: number;
-}
-export default function Dashboard({
-  user,
-  documents,
-  dotComplianceScore,
-}: DashboardProps) {
+export default function Dashboard({ user }: { user: User }) {
   const router = useRouter();
   const numberOfDocumentsToDisplay = 7;
-
   return (
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto space-y-8">
@@ -54,24 +37,26 @@ export default function Dashboard({
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px] w-full pr-4">
-                {documents.slice(0, numberOfDocumentsToDisplay).map((doc) => (
-                  <div
-                    key={doc.id}
-                    className="flex items-center space-x-4 mb-4"
-                  >
-                    <FileIcon className="h-6 w-6 text-muted-foreground" />
-                    <div className="space-y-1">
-                      <p className="text-sm font-medium leading-none">
-                        {doc.title}
-                      </p>
+                {user?.documents
+                  .slice(0, numberOfDocumentsToDisplay)
+                  .map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-center space-x-4 mb-4"
+                    >
+                      <FileIcon className="h-6 w-6 text-muted-foreground" />
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {doc.title}
+                        </p>
 
-                      <p className="text-sm text-muted-foreground flex items-center">
-                        <CalendarIcon className="h-3 w-3 mr-1" />
-                        {new Date(doc.createdAt).toLocaleDateString()}
-                      </p>
+                        <p className="text-sm text-muted-foreground flex items-center">
+                          <CalendarIcon className="h-3 w-3 mr-1" />
+                          {new Date(doc.createdAt).toLocaleDateString()}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </ScrollArea>
               <Button
                 onClick={() => router.push("/dashboard/documents")}
@@ -83,48 +68,13 @@ export default function Dashboard({
           </Card>
 
           {/* Compliance Status Card */}
-          <Card>
+          <Card className="flex flex-col space-y-14">
             <CardHeader>
               <CardTitle>TruckDocs™ Compliance Status</CardTitle>
               <CardDescription>Your current compliance score</CardDescription>
             </CardHeader>
             <CardContent>
-              <RadialBarChart
-                width={300}
-                height={300}
-                cx="50%"
-                cy="50%"
-                innerRadius="60%"
-                outerRadius="80%"
-                data={[{ name: "score", value: dotComplianceScore }]}
-                startAngle={180}
-                endAngle={0}
-              >
-                <PolarAngleAxis
-                  type="number"
-                  domain={[0, 100]}
-                  angleAxisId={0}
-                  tick={false}
-                />
-                <RadialBar
-                  background
-                  dataKey="value"
-                  cornerRadius={30}
-                  fill="var(--color-score)"
-                />
-                <text
-                  x="50%"
-                  y="50%"
-                  textAnchor="middle"
-                  dominantBaseline="middle"
-                  className="fill-primary text-4xl font-bold"
-                >
-                  {dotComplianceScore}
-                </text>
-              </RadialBarChart>
-              <p className="text-center mt-4 text-sm text-muted-foreground">
-                Your DOT compliance score is {dotComplianceScore}/100
-              </p>
+              <ChartComponent dotComplianceScore={user?.dotComplianceScore} />
             </CardContent>
           </Card>
 
