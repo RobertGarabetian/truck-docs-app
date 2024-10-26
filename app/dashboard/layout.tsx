@@ -108,11 +108,11 @@ export default function DashboardLayout({
             </SidebarGroup>
           </SidebarContent>
           <SidebarFooter className="border-t p-6">
-            <UserButton afterSignOutUrl="/" />
+            <UserButton />
           </SidebarFooter>
         </Sidebar>
-        <main className="flex-1 overflow-y-auto bg-background">
-          <div className="container mx-auto p-6 md:p-8 lg:p-12">{children}</div>
+        <main className="flex-1 bg-background">
+          <div className="container mx-auto p-6">{children}</div>
         </main>
       </div>
     </SidebarProvider>

@@ -25,7 +25,7 @@ export default function Dashboard({ user }: { user: User }) {
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-7xl mx-auto space-y-8">
         <h1 className="text-4xl font-bold text-primary">
-          Welcome, {user?.companyName}!
+          {user?.companyName ? `Welcome, ${user?.companyName}` : "Home"}
         </h1>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -37,26 +37,39 @@ export default function Dashboard({ user }: { user: User }) {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px] w-full pr-4">
-                {user?.documents
-                  .slice(0, numberOfDocumentsToDisplay)
-                  .map((doc) => (
-                    <div
-                      key={doc.id}
-                      className="flex items-center space-x-4 mb-4"
-                    >
-                      <FileIcon className="h-6 w-6 text-muted-foreground" />
-                      <div className="space-y-1">
-                        <p className="text-sm font-medium leading-none">
-                          {doc.title}
-                        </p>
+                {user.documents.length > 0 ? (
+                  user.documents
+                    .slice(0, numberOfDocumentsToDisplay)
+                    .map((doc) => (
+                      <div
+                        key={doc.id}
+                        className="flex items-center space-x-4 mb-4"
+                      >
+                        <FileIcon className="h-6 w-6 text-muted-foreground" />
+                        <div className="space-y-1">
+                          <p className="text-sm font-medium leading-none">
+                            {doc.title}
+                          </p>
 
-                        <p className="text-sm text-muted-foreground flex items-center">
-                          <CalendarIcon className="h-3 w-3 mr-1" />
-                          {new Date(doc.createdAt).toLocaleDateString()}
-                        </p>
+                          <p className="text-sm text-muted-foreground flex items-center">
+                            <CalendarIcon className="h-3 w-3 mr-1" />
+                            {new Date(doc.createdAt).toLocaleDateString()}
+                          </p>
+                        </div>
                       </div>
+                    ))
+                ) : (
+                  <div className="flex items-center space-x-4 mb-4">
+                    <FileIcon className="h-6 w-6 text-muted-foreground" />
+                    <div className="space-y-1">
+                      <p className="text-sm font-medium leading-none">
+                        You don&apos;t have any documents yet
+                      </p>
+
+                      <p className="text-sm text-muted-foreground flex items-center"></p>
                     </div>
-                  ))}
+                  </div>
+                )}
               </ScrollArea>
               <Button
                 onClick={() => router.push("/dashboard/documents")}

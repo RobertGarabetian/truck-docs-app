@@ -20,8 +20,11 @@ export async function GET() {
   let dbUser = await prisma.user.findUnique({
     where: { user_id: user.id },
   });
-
-  if (!dbUser) {
+  const tag = await prisma.tag.findFirst({
+    where: {user_id: user.id}
+  })
+  
+  if (!tag || !dbUser) {
     dbUser = await prisma.user.create({
       data: {
         user_id: user.id,
@@ -31,8 +34,16 @@ export async function GET() {
         dotComplianceScore: 50,
       },
     });
+    if(!tag){
+      await prisma.tag.create({
+        data: {
+          user_id: user.id,
+          name: "Fuel and Tax",
+          id: 1,
+        }
+      })
+    } 
   }
-  console.log(dbUser)
 
   
   if (!dbUser) {

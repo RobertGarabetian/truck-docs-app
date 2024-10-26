@@ -19,8 +19,6 @@ export default async function DashboardPage() {
     console.log("The problem is", e);
   }
 
-  const availableTags: Tag[] = [{ id: 0, name: "All" }, ...tags];
-
   return (
     <DocumentsPage
       documents={document as DocumentWithTag[]}

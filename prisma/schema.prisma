@@ -3,18 +3,20 @@ datasource db {
   url       = env("DATABASE_URL")
   directUrl = env("DIRECT_URL")
 }
+
 generator client {
   provider = "prisma-client-js"
 }
 
 model User {
-  user_id     String    @id
-  firstName   String
-  lastName    String
-  companyName String?
-  email       String     @unique
+  user_id            String     @id
+  firstName          String
+  lastName           String
+  companyName        String?
+  email              String     @unique
   dotComplianceScore Int
-  documents   Document[] // Relation to Document model
+  documents          Document[] 
+  Tag                Tag[]
 }
 
 model Document {
@@ -24,7 +26,7 @@ model Document {
   tag       Tag      @relation(fields: [tagId], references: [id])
   tagId     Int
   user      User     @relation(fields: [user_id], references: [user_id])
-  user_id    String   
+  user_id   String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -32,5 +34,7 @@ model Document {
 model Tag {
   id        Int        @id @default(autoincrement())
   name      String     @unique
-  documents Document[] 
+  user      User       @relation(fields: [user_id], references: [user_id])
+  user_id   String
+  documents Document[]
 }
