@@ -20,17 +20,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DocumentWithTag, Tag } from "@/types/types"; // Adjust the import path accordingly
+import { Document, Tag } from "@/types/types"; // Adjust the import path accordingly
 import { useRouter } from "next/navigation";
 
 interface DashboardContentProps {
-  documents: DocumentWithTag[];
-  availableTags: Tag[];
+  documents: Document[];
+  tags: Tag[];
 }
 
 export default function DocumentsPage({
   documents,
-  availableTags,
+  tags,
 }: DashboardContentProps) {
   const [activeTab, setActiveTab] = useState<string>("0");
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -58,7 +58,7 @@ export default function DocumentsPage({
           <CardContent>
             <Tabs value={activeTab} onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-4 lg:grid-cols-8">
-                {availableTags.map((tag) => (
+                {tags.map((tag) => (
                   <TabsTrigger key={tag.id} value={tag.id.toString()}>
                     {tag.name}
                   </TabsTrigger>

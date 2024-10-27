@@ -1,28 +1,25 @@
 // app/dashboard/page.tsx
 import { redirect } from "next/navigation";
-import { Tag } from "@/types/types"; // Adjust the import path
 import { currentUser } from "@clerk/nextjs/server";
+import prisma from "@/lib/prisma";
+import DocumentsPage from "@/components/DocumentsPage";
 
 export default async function DashboardPage() {
-  const user = await currentUser();
+  const User = await currentUser();
 
-  if (!user) {
+  if (!User) {
     redirect("/sign-in");
   }
 
-  try {
-    if (user.id) {
-      console.log(user.id);
-      throw Error("user Id is out of wack");
-    }
-  } catch (e) {
-    console.log("The problem is", e);
-  }
+  const documents = await prisma.document.findMany({
+    where: { user_id: User.id },
+    include: {
+      tag: true,
+    },
+  });
+  const tags = await prisma.tag.findMany({
+    where: { user_id: User.id },
+  });
 
-  return (
-    <DocumentsPage
-      documents={document as DocumentWithTag[]}
-      availableTags={availableTags}
-    />
-  );
+  return <DocumentsPage documents={documents} tags={tags} />;
 }

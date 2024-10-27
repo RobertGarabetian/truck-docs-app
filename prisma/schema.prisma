@@ -10,13 +10,13 @@ generator client {
 
 model User {
   user_id            String     @id
-  firstName          String
-  lastName           String
+  firstName          String?
+  lastName           String?
   companyName        String?
-  email              String     @unique
+  email              String?     @unique
   dotComplianceScore Int
-  documents          Document[] 
-  Tag                Tag[]
+  documents          Document[]
+  tags               Tag[]
 }
 
 model Document {

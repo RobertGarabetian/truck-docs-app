@@ -15,7 +15,7 @@ export default async function DashboardPage() {
     include: {
       documents: {
         include: {
-          tag: true, // Include tag if needed
+          tag: true,
         },
       },
     },
