@@ -13,12 +13,15 @@ import { Progress } from "@/components/ui/progress";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { FileIcon, CalendarIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { User } from "../../types/types";
+import { User, Document } from "../../types/types";
 import { ChartComponent } from "@/components/ComplianceChart";
 
 // Interfaces
-
-export default function Dashboard({ user }: { user: User }) {
+interface DashboardProps {
+  user: User;
+  documents: Document[];
+}
+export default function Dashboard({ user, documents }: DashboardProps) {
   const router = useRouter();
   const numberOfDocumentsToDisplay = 7;
   return (
@@ -37,27 +40,25 @@ export default function Dashboard({ user }: { user: User }) {
             </CardHeader>
             <CardContent>
               <ScrollArea className="h-[300px] w-full pr-4">
-                {user.documents.length > 0 ? (
-                  user.documents
-                    .slice(0, numberOfDocumentsToDisplay)
-                    .map((doc) => (
-                      <div
-                        key={doc.id}
-                        className="flex items-center space-x-4 mb-4"
-                      >
-                        <FileIcon className="h-6 w-6 text-muted-foreground" />
-                        <div className="space-y-1">
-                          <p className="text-sm font-medium leading-none">
-                            {doc.title}
-                          </p>
+                {documents.length > 0 ? (
+                  documents.slice(0, numberOfDocumentsToDisplay).map((doc) => (
+                    <div
+                      key={doc.id}
+                      className="flex items-center space-x-4 mb-4"
+                    >
+                      <FileIcon className="h-6 w-6 text-muted-foreground" />
+                      <div className="space-y-1">
+                        <p className="text-sm font-medium leading-none">
+                          {doc.title}
+                        </p>
 
-                          <p className="text-sm text-muted-foreground flex items-center">
-                            <CalendarIcon className="h-3 w-3 mr-1" />
-                            {new Date(doc.createdAt).toLocaleDateString()}
-                          </p>
-                        </div>
+                        <p className="text-sm text-muted-foreground flex items-center">
+                          <CalendarIcon className="h-3 w-3 mr-1" />
+                          {new Date(doc.createdAt).toLocaleDateString()}
+                        </p>
                       </div>
-                    ))
+                    </div>
+                  ))
                 ) : (
                   <div className="flex items-center space-x-4 mb-4">
                     <FileIcon className="h-6 w-6 text-muted-foreground" />

@@ -16,11 +16,10 @@ export interface Document {
 }
 
 export interface User {
-  user_id: string;
-  firstName: string;
-  lastName: string;
+  user_id: string ;
+  firstName: string | null;
+  lastName: string | null;
   companyName: string | undefined | null;
   dotComplianceScore: number;
-  email: string;
-  documents: Document[];
+  email: string | null;
 }

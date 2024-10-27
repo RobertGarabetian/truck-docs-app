@@ -12,12 +12,11 @@ export default async function DashboardPage() {
 
   const user = await prisma.user.findUnique({
     where: { user_id: User.id },
+  });
+  const documents = await prisma.document.findMany({
+    where: { user_id: User.id },
     include: {
-      documents: {
-        include: {
-          tag: true,
-        },
-      },
+      tag: true,
     },
   });
 
@@ -25,5 +24,5 @@ export default async function DashboardPage() {
     redirect("/sign-in");
   }
 
-  return <Dashboard user={user} />;
+  return <Dashboard user={user} documents={documents} />;
 }
