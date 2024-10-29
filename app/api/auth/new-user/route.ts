@@ -24,7 +24,8 @@ export async function GET() {
     where: {user_id: user.id}
   })
   
-  if (!tag || !dbUser) {
+  // Create user and tag if they don't exist
+  if (!dbUser) {
     dbUser = await prisma.user.create({
       data: {
         user_id: user.id,
@@ -34,15 +35,16 @@ export async function GET() {
         dotComplianceScore: 50,
       },
     });
-    if(!tag){
-      await prisma.tag.create({
-        data: {
-          user_id: user.id,
-          name: "Fuel and Tax",
-          id: 1,
-        }
-      })
-    } 
+  }
+
+  if (!tag) {
+    await prisma.tag.create({
+      data: {
+        user_id: user.id,
+        name: "Fuel and Tax",
+        // Removed id: 1
+      },
+    });
   }
 
   
