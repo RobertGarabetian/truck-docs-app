@@ -3,6 +3,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
 
 
 export async function GET() {
@@ -20,9 +21,7 @@ export async function GET() {
   let dbUser = await prisma.user.findUnique({
     where: { user_id: user.id },
   });
-  const tag = await prisma.tag.findFirst({
-    where: {user_id: user.id}
-  })
+
   
   // Create user and tag if they don't exist
   if (!dbUser) {
@@ -37,32 +36,14 @@ export async function GET() {
     });
   }
 
-  if (!tag) {
-    await prisma.tag.create({
-      data: {
-        user_id: user.id,
-        name: "Fuel and Tax",
-        // Removed id: 1
-      },
-    });
-  }
-
   
   if (!dbUser) {
-    return new NextResponse(null, {
-      status: 302, // 302 Found - temporary redirect
-      headers: {
-        Location: 'https://truck-docs-app.vercel.app/dashboard',
-      },
-    });
+    redirect("/sign-up")
   }
     // Perform your Route Handler's logic with the returned user object
   
-  return new NextResponse(null, {
-    status: 302, // 302 Found - temporary redirect
-    headers: {
-      Location: 'https://truck-docs-app.vercel.app/dashboard',
-    },
-  });
+  return (
+    redirect("/dashboard")
+  );
   
   }

@@ -8,6 +8,7 @@ import {
   FileIcon,
   CalendarIcon,
   ExternalLinkIcon,
+  ChartNoAxesGantt,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -22,6 +23,7 @@ import {
 } from "@/components/ui/table";
 import { Document, Tag } from "@/types/types"; // Adjust the import path accordingly
 import { useRouter } from "next/navigation";
+import ManageTagModal from "./ManageTagModal";
 
 interface DashboardContentProps {
   documents: Document[];
@@ -34,6 +36,7 @@ export default function DocumentsPage({
 }: DashboardContentProps) {
   const [activeTab, setActiveTab] = useState<string>("0");
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [showTagModal, setShowTagModal] = useState(false);
   const router = useRouter(); // Initialize router
 
   const filteredDocuments = documents.filter((doc) =>
@@ -46,9 +49,14 @@ export default function DocumentsPage({
           <h1 className="text-3xl font-bold tracking-tight">
             Document Dashboard
           </h1>
-          <Button onClick={() => setShowUploadModal(true)}>
-            <PlusIcon className="mr-2 h-4 w-4" /> Upload Document
-          </Button>
+          <div className="flex flex-row space-x-2">
+            <Button onClick={() => setShowTagModal(true)}>
+              <ChartNoAxesGantt className="mr-2 h-4 w-4" /> Manage Tags
+            </Button>
+            <Button onClick={() => setShowUploadModal(true)}>
+              <PlusIcon className="mr-2 h-4 w-4" /> Upload Document
+            </Button>
+          </div>
         </div>
 
         <Card>
@@ -128,6 +136,19 @@ export default function DocumentsPage({
               setShowUploadModal(false);
               router.refresh(); // Refresh data after successful upload
             }}
+            tags={tags}
+          />
+        )}
+        {showTagModal && (
+          <ManageTagModal
+            onClose={() => {
+              setShowTagModal(false);
+            }}
+            onUploadSuccess={() => {
+              setShowTagModal(false);
+              router.refresh(); // Refresh data after successful upload
+            }}
+            tags={tags}
           />
         )}
       </div>

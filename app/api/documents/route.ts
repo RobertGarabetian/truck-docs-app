@@ -28,6 +28,9 @@ export const GET = async () => {
     return NextResponse.json({ error: 'Failed to fetch documents' }, { status: 500 });
   }
 };
+
+
+
 export async function POST(req: Request) {
   const { title, fileUrl, tagId } = await req.json();
   const User = await currentUser()
@@ -36,8 +39,6 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const userId = parseInt(User.id, 10);
-  console.log(userId);
   try {
     const document = await prisma.document.create({
       data: {

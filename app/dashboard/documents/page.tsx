@@ -18,7 +18,7 @@ export default async function DashboardPage() {
     },
   });
   const tags = await prisma.tag.findMany({
-    where: { user_id: User.id },
+    where: { OR: [{ user_id: User.id }, { id: { lt: 10 } }] },
   });
 
   return <DocumentsPage documents={documents} tags={tags} />;

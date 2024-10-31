@@ -2,27 +2,23 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { UploadDropzone } from "./SourceButtons";
-
+import { Pencil } from "lucide-react";
 interface Tag {
   id: number;
   name: string;
 }
-interface UploadDocumentModalProps {
+interface UploadTagModalProps {
   onClose: () => void;
   onUploadSuccess: () => void;
   tags: Tag[];
 }
-export default function UploadDocumentModal({
+export default function UploadTagModal({
   onClose,
   onUploadSuccess,
   tags,
-}: UploadDocumentModalProps) {
-  // const [title, setTitle] = useState("");
+}: UploadTagModalProps) {
   const [selectedTagId, setSelectedTagId] = useState<number | null>(null);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
-  // const [fileUrl, setFileUrl] = useState<string | null>("");
-  // const [fileUrl, setFileUrl] = useState("");
 
   // Fetch available tags when the component mounts
   useEffect(() => {
@@ -76,34 +72,25 @@ export default function UploadDocumentModal({
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Upload Document</h2>
+        <h2 className="text-2xl font-bold mb-4">Manage Tags</h2>
         <div>
           {/* Tag Selection */}
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2 text-xl">Tag</label>
-            <select
-              value={selectedTagId ?? ""}
-              onChange={(e) => setSelectedTagId(parseInt(e.target.value))}
-              className="w-full px-3 py-2 border rounded focus:outline-none focus:ring focus:border-blue-300 bg-white"
-            >
+            <label className="block text-gray-700 mb-2 text-xl">Tags</label>
+            <div className="w-full px-3 py-2 flex flex-col space-y-1">
               {availableTags.map((tag) => (
-                <option key={tag.id} value={tag.id}>
-                  {tag.name}
-                </option>
+                <div
+                  key={tag.id}
+                  className="flex flex-row w-full border border-slate-500 p-2"
+                >
+                  <div>{tag.name}</div>
+                  <button>
+                    <Pencil />
+                  </button>
+                </div>
               ))}
-            </select>
+            </div>
           </div>
-          <UploadDropzone
-            endpoint="uploader"
-            onClientUploadComplete={(res) => {
-              console.log("Upload Completed");
-              handleSubmit(res[0].url, res[0].name);
-            }}
-            onUploadError={(error: Error) => {
-              alert(`ERROR! ${error.message}`);
-            }}
-            config={{ appendOnPaste: true, mode: "manual" }}
-          />
 
           {/* Buttons */}
           <div className="flex justify-end space-x-2">
