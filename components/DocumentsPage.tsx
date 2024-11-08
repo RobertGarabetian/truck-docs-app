@@ -40,7 +40,7 @@ export default function DocumentsPage({
   const router = useRouter(); // Initialize router
 
   const filteredDocuments = documents.filter((doc) =>
-    activeTab === "0" ? true : doc.tag.id.toString() === activeTab
+    activeTab === "0" ? true : doc.tag?.id.toString() === activeTab
   );
   return (
     <div className="min-h-screen bg-background">
