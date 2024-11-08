@@ -1,20 +1,22 @@
+// route.ts
+// route.ts
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/prisma"; // Adjust this import based on your setup
-import { auth } from '@clerk/nextjs/server'
+import { prisma } from "@/lib/prisma";
+import { getAuth } from "@clerk/nextjs/server"; // Update the import
 
-export async function POST(request: Request) {
-  const serverId  = await auth();
+export async function POST(request: any) {
+  const { userId } = getAuth(request); // Pass the request object
 
-  if (!serverId) {
+  if (!userId) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   try {
     const body = await request.json();
-    const { userId, email, firstName, lastName } = body;
+    const { user_id, email, firstName, lastName } = body;
 
     // Ensure the userId from the request matches the authenticated user
-    if (userId !== serverId) {
+    if (user_id !== userId) {
       return NextResponse.json({ error: "Invalid user ID" }, { status: 400 });
     }
 

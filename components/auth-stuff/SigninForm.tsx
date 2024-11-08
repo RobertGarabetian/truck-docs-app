@@ -15,50 +15,85 @@ interface SignInFormProps {
 
 const SigninForm = ({ signInWithEmail, clerkError }: SignInFormProps) => {
   return (
-    <div className="justify-center mt-12 grid justify-items-center md:mt-20">
-      <div className="h-auto bg-blue-700 rounded-xl md:rounded-3xl w-80 md:w-96">
-        <div className="p-6 md:p-8">
-          <h1 className="mb-6 text-3xl font-light text-white">Sign In</h1>
-          <form
-            onSubmit={(e) => {
-              e.preventDefault();
-              const target = e.target as typeof e.target & {
-                email: { value: string };
-                password: { value: string };
-              };
-              const email = target.email.value;
-              const password = target.password.value;
-              signInWithEmail({ emailAddress: email, password: password });
-            }}
-          >
-            <input
-              name="email"
-              className="block w-full pb-4 pl-4 mb-3 text-sm font-light bg-transparent border-0 border-b-2 h-37 border-slate-600 text-white caret-slate-700 focus:border-white"
-              placeholder="Email address"
-              type="email"
-              required
-            />
-            <input
-              name="password"
-              className="block w-full pb-4 pl-4 mb-3 text-sm font-light bg-transparent border-0 border-b-2 h-37 border-slate-600 text-white caret-slate-700 focus:border-white"
-              placeholder="Password"
-              type="password"
-              required
-            />
-            <h2 className="text-slate-700 mb-8">
-              {clerkError && <p>{clerkError}</p>}
-            </h2>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100 w-screen">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-2xl">
+        <div className="text-center">
+          <h1 className="text-3xl font-bold text-gray-900">Sign In</h1>
+          <p className="mt-2 text-sm text-gray-600">
+            Log into your account to get started
+          </p>
+        </div>
+        <form
+          className="mt-8 space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault();
+            const target = e.target as typeof e.target & {
+              email: { value: string };
+              password: { value: string };
+            };
+            const email = target.email.value;
+            const password = target.password.value;
+            signInWithEmail({ emailAddress: email, password: password });
+          }}
+        >
+          {/* */}
+          <div className="space-y-4">
+            <div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Email address
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autoComplete="email"
+                required
+                className="block w-full px-3 py-2 mt-1 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="you@example.com"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                autoComplete="new-password"
+                required
+                className="block w-full px-3 py-2 mt-1 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md shadow-sm appearance-none focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                placeholder="••••••••"
+              />
+            </div>
+          </div>
+          {/**/}
+          <h2 className="text-slate-700 mb-8">
+            {clerkError && <p>{clerkError}</p>}
+          </h2>
+          <div>
             <button
-              className="w-full h-12 mb-6 text-sm font-light text-white hover:text-blue-900 hover:bg-white bg-slate-700 rounded-md"
               type="submit"
+              className="flex justify-center w-full px-4 py-2 text-sm font-medium text-white bg-indigo-600 border border-transparent rounded-md shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
             >
-              Sign in
+              Sign In
             </button>
-          </form>
-          <p className="text-sm font-light text-center text-white">
-            Don&apos;t have an acccount?
-            <Link className="ml-2 text-slate-200" href="/sign-up">
-              Sign up
+          </div>
+        </form>
+        <div className="text-sm text-center">
+          <p className="text-gray-600">
+            Don&apos;t have an account?{" "}
+            <Link
+              href="/sign-in"
+              className="font-medium text-indigo-600 hover:text-indigo-500"
+            >
+              Log in
             </Link>
           </p>
         </div>

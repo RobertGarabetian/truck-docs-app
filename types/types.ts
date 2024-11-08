@@ -1,7 +1,7 @@
 export interface Tag {
   id: number;
   name: string;
-  user_id: string;
+  user_id: string | null;
 }
 
 export interface Document {
@@ -11,8 +11,8 @@ export interface Document {
   user_id: string;
   createdAt: Date;
   updatedAt: Date;
-  tagId: number;
-  tag: Tag;
+  tagId: number | null;
+  tag: Tag | null;
 }
 
 export interface User {

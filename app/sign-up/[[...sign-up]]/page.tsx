@@ -1,9 +1,10 @@
 "use client";
 import { FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSignUp } from "@clerk/nextjs";
+import { SignIn, useSignUp } from "@clerk/nextjs";
 import SignupForm from "@/components/auth-stuff/SignupForm";
 import VerifyForm from "@/components/auth-stuff/VerifyForm";
+import { currentUser } from "@clerk/nextjs/server";
 
 const Signup = () => {
   const { isLoaded, signUp, setActive } = useSignUp();
@@ -51,7 +52,7 @@ const Signup = () => {
       }
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
-        const userId = completeSignUp.createdUserId;
+        const user_id = completeSignUp.createdUserId;
         const email = signUp.emailAddress;
         const firstName = signUp.firstName;
         const lastName = signUp.lastName;
@@ -60,8 +61,9 @@ const Signup = () => {
         const response = await fetch("/api/auth/user", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          credentials: "include", // Add this line
           body: JSON.stringify({
-            userId,
+            user_id,
             email,
             firstName,
             lastName,
