@@ -70,7 +70,7 @@ export default function UploadTagModal({
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen">
+    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen w-screen">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
         <h2 className="text-2xl font-bold mb-4">Manage Tags</h2>
         <div>
@@ -81,7 +81,7 @@ export default function UploadTagModal({
               {availableTags.map((tag) => (
                 <div
                   key={tag.id}
-                  className="flex flex-row w-full border border-slate-500 p-2"
+                  className="flex flex-row w-full border border-slate-500 p-2 rounded justify-between"
                 >
                   <div>{tag.name}</div>
                   <button>

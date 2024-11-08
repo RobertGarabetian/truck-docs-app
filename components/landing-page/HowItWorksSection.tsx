@@ -12,7 +12,7 @@ export default function HowItWorksSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
           <div>
             <Image
-              src="/placeholder.svg"
+              src="https://utfs.io/f/TyvOmWdABc6GiinXK2qbJKGoCOxhAfnzm4lNyeVw7gLX9QaB"
               alt="TruckDocs Dashboard"
               width={600}
               height={400}

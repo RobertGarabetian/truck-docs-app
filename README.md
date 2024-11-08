@@ -1,5 +1,12 @@
-- Make 5 of the users documents displayed on the front page 
-- Find a way to have documents refetch after upload
+Priority
+- [] Current features are incorporated / no bugs
+- [] Stripe integration 
+- [] Creating organizations with authorized users
+- [] Drivers page 
+- [] More info on each pricing tier
 
-- Migrating to Clerk Auth
-- Migrating to Supabase
+Horizon 
+- [] Mobile app
+
+General
+- [] Refunds just call us and we'll discuss

@@ -126,32 +126,31 @@ export default function DocumentsPage({
             </Tabs>
           </CardContent>
         </Card>
-
-        {showUploadModal && (
-          <UploadDocumentModal
-            onClose={() => {
-              setShowUploadModal(false);
-            }}
-            onUploadSuccess={() => {
-              setShowUploadModal(false);
-              router.refresh(); // Refresh data after successful upload
-            }}
-            tags={tags}
-          />
-        )}
-        {showTagModal && (
-          <ManageTagModal
-            onClose={() => {
-              setShowTagModal(false);
-            }}
-            onUploadSuccess={() => {
-              setShowTagModal(false);
-              router.refresh(); // Refresh data after successful upload
-            }}
-            tags={tags}
-          />
-        )}
       </div>
+      {showUploadModal && (
+        <UploadDocumentModal
+          onClose={() => {
+            setShowUploadModal(false);
+          }}
+          onUploadSuccess={() => {
+            setShowUploadModal(false);
+            router.refresh(); // Refresh data after successful upload
+          }}
+          tags={tags}
+        />
+      )}
+      {showTagModal && (
+        <ManageTagModal
+          onClose={() => {
+            setShowTagModal(false);
+          }}
+          onUploadSuccess={() => {
+            setShowTagModal(false);
+            router.refresh(); // Refresh data after successful upload
+          }}
+          tags={tags}
+        />
+      )}
     </div>
   );
 }

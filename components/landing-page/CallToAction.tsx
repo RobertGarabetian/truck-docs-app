@@ -16,7 +16,7 @@ export default function CallToAction() {
         </p>
         <div>
           <Link
-            href="/signup"
+            href="/sign-up"
             className="bg-white text-teal-600 py-3 px-8 rounded-md font-semibold hover:bg-gray-100 transition-all duration-300 inline-flex items-center group"
           >
             Start Your Free Trial

@@ -13,7 +13,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
         >
-          Simplify Your Trucking Document Management
+          Standardize Your Document Management
         </motion.h1>
         <motion.p
           className="text-2xl mb-8 text-gray-600"

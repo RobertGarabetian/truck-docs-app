@@ -5,8 +5,8 @@ import { redirect } from "next/navigation";
 
 export default async function DashboardPage() {
   const User = await currentUser();
-
   if (!User) {
+    console.log("NO USERRR Clerk");
     redirect("/sign-in");
   }
 
@@ -21,6 +21,7 @@ export default async function DashboardPage() {
   });
 
   if (!user) {
+    console.log("NO USERRR Server");
     redirect("/sign-in");
   }
 
