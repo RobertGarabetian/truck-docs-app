@@ -24,6 +24,7 @@ import {
 import { Document, Tag } from "@/types/types"; // Adjust the import path accordingly
 import { useRouter } from "next/navigation";
 import ManageTagModal from "./ManageTagModal";
+import EditDocumentModal from "./EditDocumentModal";
 
 interface DashboardContentProps {
   documents: Document[];
@@ -37,6 +38,20 @@ export default function DocumentsPage({
   const [activeTab, setActiveTab] = useState<string>("0");
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [showTagModal, setShowTagModal] = useState(false);
+  const [showEditDocModal, setShowEditDocModal] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [documentToEdit, setDocumentToEdit] = useState<Document | null>(null);
+
+  // Fetch tags and documents as needed
+
+  const handleEditClick = (document: Document) => {
+    setDocumentToEdit(document);
+    setIsModalOpen(true);
+  };
+
+  const handleEditSuccess = () => {
+    // Refresh documents or update state
+  };
   const router = useRouter(); // Initialize router
 
   const filteredDocuments = documents.filter((doc) =>
@@ -97,15 +112,15 @@ export default function DocumentsPage({
                           </div>
                         </TableCell>
                         <TableCell>
-                          <a
-                            href={doc.fileUrl}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="flex items-center text-primary hover:underline"
+                          <button
+                            onClick={() => {
+                              handleEditClick(doc);
+                            }}
+                            className="flex bg-transparent items-center text-primary hover:underline"
                           >
                             Edit
                             <ExternalLinkIcon className="ml-1 h-4 w-4" />
-                          </a>
+                          </button>
                         </TableCell>
                         <TableCell>
                           <a
@@ -148,6 +163,14 @@ export default function DocumentsPage({
             setShowTagModal(false);
             router.refresh(); // Refresh data after successful upload
           }}
+          tags={tags}
+        />
+      )}
+      {isModalOpen && documentToEdit && (
+        <EditDocumentModal
+          onClose={() => setIsModalOpen(false)}
+          onEditSuccess={handleEditSuccess}
+          document={documentToEdit}
           tags={tags}
         />
       )}

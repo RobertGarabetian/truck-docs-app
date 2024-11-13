@@ -11,8 +11,8 @@ export interface Document {
   user_id: string;
   createdAt: Date;
   updatedAt: Date;
-  tagId: number | null;
-  tag: Tag | null;
+  tagId: number ;
+  tag: Tag ;
 }
 
 export interface User {

@@ -1,4 +1,4 @@
-// // components/ManageTagModal.tsx
+// // components/UploadDocumentModal.tsx
 // "use client";
 
 // import React, { useState, useEffect } from "react";
@@ -12,7 +12,7 @@
 //   onUploadSuccess: () => void;
 //   tags: Tag[];
 // }
-// export default function UploadTagModal({
+// export default function EditDocumentModal({
 //   onClose,
 //   onUploadSuccess,
 //   tags,
@@ -107,136 +107,123 @@
 //     </div>
 //   );
 // }
+
+// components/EditDocumentModal.tsx
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Pencil, Save, X } from "lucide-react";
+import { Document, Tag } from "@/types/types";
 
-interface Tag {
-  id: number;
-  name: string;
-}
-
-interface UploadTagModalProps {
+interface EditDocumentModalProps {
   onClose: () => void;
-  onUploadSuccess: () => void;
+  onEditSuccess: () => void;
+  document: Document;
   tags: Tag[];
 }
 
-export default function UploadTagModal({
+export default function EditDocumentModal({
   onClose,
-  onUploadSuccess,
+  onEditSuccess,
+  document,
   tags,
-}: UploadTagModalProps) {
+}: EditDocumentModalProps) {
+  const [title, setTitle] = useState<string>(document.title);
+  const [selectedTagId, setSelectedTagId] = useState<number>(document.tagId);
   const [availableTags, setAvailableTags] = useState<Tag[]>([]);
-  const [editingTagId, setEditingTagId] = useState<number | null>(null);
-  const [newTagName, setNewTagName] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  // Fetch available tags when the component mounts
+  // Set available tags when the component mounts or when tags prop changes
   useEffect(() => {
-    const fetchTags = async () => {
-      try {
-        const data: Tag[] = tags;
-        setAvailableTags(data);
-      } catch (error) {
-        console.error("Error fetching tags:", error);
-        alert("An error occurred while loading tags.");
-      }
-    };
-
-    fetchTags();
+    setAvailableTags(tags);
   }, [tags]);
 
-  const handleEditClick = (tag: Tag) => {
-    setEditingTagId(tag.id);
-    setNewTagName(tag.name);
+  // Handle changes to the title input
+  const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTitle(e.target.value);
   };
 
-  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTagName(e.target.value);
+  // Handle changes to the tag selection
+  const handleTagChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedTagId(parseInt(e.target.value));
   };
 
-  const handleSaveClick = async (tagId: number) => {
-    setIsLoading(true);
+  // Handle form submission
+  const handleSubmit = async () => {
+    // Input validation
+    if (!title.trim()) {
+      alert("Title cannot be empty.");
+      return;
+    }
+
+    if (!selectedTagId) {
+      alert("Please select a tag.");
+      return;
+    }
+
+    setIsLoading(true); // Start loading
+
+    const documentData = {
+      title,
+      tagId: selectedTagId,
+    };
+
     try {
-      const res = await fetch(`/api/tags/${tagId}`, {
-        method: "PUT", // or "PATCH"
+      const res = await fetch(`/api/documents/${document.id}`, {
+        method: "PUT", // Use "PUT" or "PATCH" based on your API design
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: newTagName }),
+        body: JSON.stringify(documentData),
       });
 
       if (res.ok) {
-        // Update the tag in the local state
-        setAvailableTags((prevTags) =>
-          prevTags.map((tag) =>
-            tag.id === tagId ? { ...tag, name: newTagName } : tag
-          )
-        );
-        setEditingTagId(null);
+        console.log("Document updated successfully!");
+        onEditSuccess(); // Callback to parent component to refresh data or state
+        onClose(); // Close the modal
       } else {
         const errorData = await res.json();
         alert(errorData.error || "Update failed.");
       }
     } catch (error) {
-      console.error("Error updating tag:", error);
-      alert("An error occurred while updating the tag.");
+      console.error("Error updating document:", error);
+      alert("An error occurred during the update.");
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // End loading
     }
-  };
-
-  const handleCancelClick = () => {
-    setEditingTagId(null);
-    setNewTagName("");
   };
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 h-screen w-screen">
       <div className="bg-white p-6 rounded shadow-lg w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-4">Manage Tags</h2>
+        <h2 className="text-2xl font-bold mb-4">Edit Document</h2>
         <div>
-          {/* Tag Management */}
+          {/* Title Input */}
           <div className="mb-4">
-            <label className="block text-gray-700 mb-2 text-xl">Tags</label>
-            <div className="w-full px-3 py-2 flex flex-col space-y-1">
+            <label className="block text-gray-700 mb-2 text-xl">Title</label>
+            <input
+              type="text"
+              value={title}
+              onChange={handleTitleChange}
+              className="w-full px-3 py-2 border rounded"
+              disabled={isLoading} // Disable input when loading
+            />
+          </div>
+
+          {/* Tag Selection */}
+          <div className="mb-4">
+            <label className="block text-gray-700 mb-2 text-xl">Tag</label>
+            <select
+              value={selectedTagId}
+              onChange={handleTagChange}
+              className="w-full px-3 py-2 border rounded"
+              disabled={isLoading} // Disable select when loading
+            >
               {availableTags.map((tag) => (
-                <div
-                  key={tag.id}
-                  className="flex flex-row w-full border border-slate-500 p-2 rounded justify-between items-center"
-                >
-                  {editingTagId === tag.id ? (
-                    <>
-                      <input
-                        type="text"
-                        value={newTagName}
-                        onChange={handleNameChange}
-                        className="border rounded p-1 flex-grow mr-2"
-                        disabled={isLoading}
-                      />
-                      <button
-                        onClick={() => handleSaveClick(tag.id)}
-                        disabled={isLoading}
-                      >
-                        <Save />
-                      </button>
-                      <button onClick={handleCancelClick} disabled={isLoading}>
-                        <X />
-                      </button>
-                    </>
-                  ) : (
-                    <>
-                      <div>{tag.name}</div>
-                      <button onClick={() => handleEditClick(tag)}>
-                        <Pencil />
-                      </button>
-                    </>
-                  )}
-                </div>
+                <option key={tag.id} value={tag.id}>
+                  {tag.name}
+                </option>
               ))}
-            </div>
+            </select>
           </div>
 
           {/* Buttons */}
@@ -245,8 +232,17 @@ export default function UploadTagModal({
               type="button"
               onClick={onClose}
               className="px-4 py-2 border rounded hover:bg-gray-100"
+              disabled={isLoading} // Disable button when loading
             >
-              Close
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+              disabled={isLoading} // Disable button when loading
+            >
+              {isLoading ? "Saving..." : "Save"} {/* Show saving indicator */}
             </button>
           </div>
         </div>
